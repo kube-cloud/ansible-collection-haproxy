@@ -1,0 +1,68 @@
+name: Test Ansible Collection
+
+on:
+  push:
+    paths:
+      - 'plugins/**'
+      - 'roles/**'
+      - 'tests/**'
+      - '.github/workflows/publish-collection.yml'
+  pull_request:
+    paths:
+      - 'plugins/**'
+      - 'roles/**'
+      - 'tests/**'
+      - '.github/workflows/publish-collection.yml'
+
+jobs:
+  sanity:
+    strategy:
+      matrix:
+        ansible:
+          - stable-2.14
+        os:
+          - ubuntu-22.04
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Perform sanity testing
+        uses: ansible-community/ansible-test-gh-action@release/v1
+        with:
+          ansible-core-version: ${{ matrix.ansible }}
+          testing-type: sanity
+          pull-request-change-detection: true
+
+  publish:
+    needs: sanity
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          sudo add-apt-repository -y ppa:rmescandon/yq
+          sudo apt-get update -y
+          sudo apt-get install -y jq yq
+          python -m pip install --upgrade pip
+          pip install ansible
+
+      - name: Create Collection Archive
+        run: |
+          ansible-galaxy collection build
+
+      - name: Publish Collection to Galaxy
+        run: |
+          MODULE_VERSION=$(yq e '.version' galaxy.yml)
+          MODULE_NAMESPACE=$(yq e '.namespace' galaxy.yml)
+          MODULE_NAME=$(yq e '.name' galaxy.yml)
+          echo "Version: $MODULE_VERSION"
+          ansible-galaxy collection publish $MODULE_NAMESPACE-$MODULE_NAME-$MODULE_VERSION.tar.gz --api-key ${{ secrets.ANSIBLE_GALAXY_API_KEY}}
+  

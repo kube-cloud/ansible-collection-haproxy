@@ -1,2 +1,6 @@
-# kc-is-sre-ansible-role-ovh-acme-certificate
-KubeCloud Ansible Role used to Manage ACME Certificate based on OVH DNS Challenge
+[![Test Ansible Collection](https://github.com/kube-cloud/ansible-collection-haproxy/actions/workflows/sanity-checks-plugins.yml/badge.svg)](https://github.com/kube-cloud/ansible-collection-haproxy/actions/workflows/sanity-checks-plugins.yml)
+
+# Ansible Collection : HA Proxy
+
+HA Proxy Ansible Collections
+
