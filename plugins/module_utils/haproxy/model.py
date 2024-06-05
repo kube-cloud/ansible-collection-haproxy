@@ -1,7 +1,9 @@
 from __future__ import (absolute_import, division, print_function)
 from typing import List, Dict, Optional
 from dataclasses import dataclass, field
-from enumeration import *
+from enumeration import LoadBalancingAlgorithm, CookieType, Requirement, WebSocketProtocol
+from enumeration import HealthCheckType, TimeoutStatus, MatchType, ErrorStatus, OkStatus
+from enumeration import HttpMethod, ProxyProtocol
 
 __metaclass__ = type
 
@@ -54,6 +56,7 @@ class Balance:
         return str(self.__dict__)
 
 
+@dataclass
 class Cookie:
     """
     Represents a session cookie configuration.

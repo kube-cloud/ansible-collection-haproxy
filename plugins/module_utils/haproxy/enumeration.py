@@ -9,7 +9,7 @@ class EnableDisableEnum(Enum):
 
     # The "enabled" status indicates that the feature is active
     ENABLED = "enabled"
-    
+
     # The "disabled" status indicates that the feature is inactive
     DISABLED = "disabled"
 
@@ -19,7 +19,7 @@ class Layer(Enum):
 
     # Layer 4 (transport), typically for TCP/UDP
     LAYER4 = "layer4"
-    
+
     # Layer 7 (application), typically for HTTP/HTTPS
     LAYER7 = "layer7"
 
@@ -29,16 +29,16 @@ class SSLVersion(Enum):
 
     # SSLv3 (Secure Sockets Layer version 3)
     SSLv3 = "SSLv3"
-    
+
     # TLSv1.0 (Transport Layer Security version 1.0)
     TLSv1_0 = "TLSv1.0"
-    
+
     # TLSv1.1 (Transport Layer Security version 1.1)
     TLSv1_1 = "TLSv1.1"
-    
+
     # TLSv1.2 (Transport Layer Security version 1.2)
     TLSv1_2 = "TLSv1.2"
-    
+
     # TLSv1.3 (Transport Layer Security version 1.3)
     TLSv1_3 = "TLSv1.3"
 
@@ -48,13 +48,13 @@ class ErrorActionType(Enum):
 
     # The "fastinter" action type
     FASTINTER = "fastinter"
-    
+
     # The "fail-check" action type
     FAIL_CHECK = "fail-check"
-    
+
     # The "sudden-death" action type
     SUDDEN_DEATH = "sudden-death"
-    
+
     # The "mark-down" action type
     MARK_DOWN = "mark-down"
 
@@ -64,7 +64,7 @@ class Requirement(Enum):
 
     # The "none" requirement indicates that no action is required
     NONE = "none"
-    
+
     # The "required" requirement indicates that action is required
     REQUIRED = "required"
 

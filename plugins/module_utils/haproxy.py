@@ -82,7 +82,6 @@ class Client:
         # Initialize Basic Authentication
         self.auth = HTTPBasicAuth(username, password)
 
-
     def get_configuration_version(self):
         """
         Get HAProxy Configuration Version.
@@ -114,7 +113,6 @@ class Client:
 
             # Raise Exception
             response.raise_for_status()
-
 
     def create_transaction(self):
         """
@@ -151,7 +149,6 @@ class Client:
             # Raise Exception
             response.raise_for_status()
 
-
     def validate_transaction(self, transaction_id):
         """
         Validate HAProxy Data Plane API Transaction and Details.
@@ -184,7 +181,6 @@ class Client:
             # Raise Exception
             response.raise_for_status()
 
-
     def get_backends(self):
         """
         Retrieves the list of Backends from the HAProxy Data Plane API.
@@ -216,7 +212,6 @@ class Client:
 
             # Raise Exception
             response.raise_for_status()
-
 
     def get_backend(self, name):
         """
@@ -253,7 +248,6 @@ class Client:
             # Raise Exception
             response.raise_for_status()
 
-
     def get_frontends(self):
         """
         Retrieves the list of Frontends from the HAProxy Data Plane API.
@@ -285,7 +279,6 @@ class Client:
 
             # Raise Exception
             response.raise_for_status()
-
 
     def get_frontend(self, name):
         """
@@ -321,7 +314,6 @@ class Client:
 
             # Raise Exception
             response.raise_for_status()
-
 
     def create_backend(self, backend, transaction_id):
         """
@@ -386,4 +378,3 @@ class Client:
 
             # Raise Exception
             response.raise_for_status()
-
