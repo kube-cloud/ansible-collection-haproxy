@@ -1,9 +1,9 @@
 from __future__ import (absolute_import, division, print_function)
 from typing import List, Dict, Optional
 from dataclasses import dataclass, field
-from enumeration import LoadBalancingAlgorithm, CookieType, Requirement, WebSocketProtocol
-from enumeration import HealthCheckType, TimeoutStatus, MatchType, ErrorStatus, OkStatus
 from enumeration import HttpMethod, ProxyProtocol
+from ansible_collections.kube_cloud.haproxy.plugins.module_utils.haproxy import LoadBalancingAlgorithm, CookieType, Requirement, WebSocketProtocol
+from ansible_collections.kube_cloud.haproxy.plugins.module_utils.haproxy import HealthCheckType, TimeoutStatus, MatchType, ErrorStatus, OkStatus
 
 __metaclass__ = type
 
