@@ -8,6 +8,7 @@ from enumeration import HttpMethod, ProxyProtocol
 __metaclass__ = type
 
 
+# Load Balancing Configuration
 @dataclass
 class Balance:
     """
@@ -56,6 +57,7 @@ class Balance:
         return str(self.__dict__)
 
 
+# Backend Cookie Configuration
 @dataclass
 class Cookie:
     """
@@ -104,6 +106,7 @@ class Cookie:
         return str(self.__dict__)
 
 
+# Backend Configuration
 @dataclass
 class Server:
     """
@@ -160,6 +163,7 @@ class Server:
             raise ValueError("The 'port' field must be a positive integer.")
 
 
+# HTTP HealthCheck Configuration
 @dataclass
 class HttpHealthCheck:
     """
@@ -224,6 +228,7 @@ class HttpHealthCheck:
     ok_status: Optional[OkStatus] = None
 
 
+# HTTP check parameters Configuration
 @dataclass
 class HttpCheckParams:
     """
@@ -238,6 +243,8 @@ class HttpCheckParams:
     uri: str
     version: str
 
+
+# Backend Configuration
 @dataclass
 class Backend:
     name: str
