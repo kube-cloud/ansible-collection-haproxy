@@ -36,7 +36,7 @@ jobs:
   publish:
     needs: sanity
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop'
+    if: github.ref == 'refs/heads/develop_old'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -63,6 +63,6 @@ jobs:
           MODULE_VERSION=$(yq e '.version' galaxy.yml)
           MODULE_NAMESPACE=$(yq e '.namespace' galaxy.yml)
           MODULE_NAME=$(yq e '.name' galaxy.yml)
-          echo "Version: $MODULE_VERSION"
+          echo "Module : [Namespace : $MODULE_NAMESPACE, Name : $MODULE_NAME, Version: $MODULE_VERSION]"
           ansible-galaxy collection publish $MODULE_NAMESPACE-$MODULE_NAME-$MODULE_VERSION.tar.gz --api-key ${{ secrets.ANSIBLE_GALAXY_API_KEY}}
   

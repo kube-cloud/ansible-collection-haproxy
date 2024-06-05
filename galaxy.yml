@@ -17,7 +17,7 @@ authors:
 
 
 # Vollection Description
-description: KubeCloud Ansible OVH Collection
+description: KubeCloud Ansible HA Proxy Collection
 
 # Collection License (https://spdx.org/licenses/) : (Mutualy exclusive with 'license_file' property)
 license:
@@ -29,29 +29,30 @@ license:
 # A list of tags you want to associate with the collection for indexing/searching. A tag name has the same character
 # requirements as 'namespace' and 'name'
 tags:
-- cloud
-- ops
 - system
 - proxy
+- lb
 - linux
 
 # Collection Dependencies
 # collection label 'namespace.name'. The value is a version range
 # L(specifiers,https://python-semanticversion.readthedocs.io/en/latest/#requirement-specification). Multiple version
 # range specifiers can be set and are separated by ','
-dependencies: {}
+dependencies: {
+  "community.general": ">=4.0.0"
+}
 
 # The URL of the originating SCM repository
-repository: https://github.com/kube-cloud/ansible-collection-ovh
+repository: https://github.com/kube-cloud/ansible-collection-haproxy
 
 # The URL to any online docs
-documentation: https://github.com/kube-cloud/ansible-collection-ovh/tree/main/docs
+documentation: https://github.com/kube-cloud/ansible-collection-haproxy/tree/main/docs
 
 # The URL to the homepage of the collection/project
-homepage: https://github.com/kube-cloud/ansible-collection-ovh
+homepage: https://github.com/kube-cloud/ansible-collection-haproxy
 
 # The URL to the collection issue tracker
-issues: https://github.com/kube-cloud/ansible-collection-ovh/issues
+issues: https://github.com/kube-cloud/ansible-collection-haproxy/issues
 
 build_ignore:
   - ".editorconfig"
