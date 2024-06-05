@@ -41,7 +41,6 @@ class Client:
     # URL Format
     URL_TEMPLATE = "{base_url}/{version}/{uri}"
 
-
     def __init__(self, base_url, api_version, username, password):
         """
         Initializes the HAProxyClient with the given base URL and credentials.

@@ -118,6 +118,7 @@ class CookieType(Enum):
     # Prefix the cookie
     PREFIX = "prefix"
 
+
 # Define an enumeration for Websocket Protocol
 class WebSocketProtocol(Enum):
     """
@@ -131,6 +132,7 @@ class WebSocketProtocol(Enum):
     AUTO = "auto"
     H1 = "h1"
     H2 = "h2"
+
 
 # Define an enumeration for Proxy Backend/Frontend Protocol
 class ProxyProtocol(Enum):
@@ -172,6 +174,7 @@ class HealthCheckType(Enum):
     UNSET_VAR = "unset-var"
 
 
+# Define an enumeration for HttpMethod
 class HttpMethod(Enum):
     """
     Represents HTTP check methods for HAProxy configurations.
@@ -191,6 +194,8 @@ class HttpMethod(Enum):
     TRACE = "TRACE"
     PATCH = "PATCH"
 
+
+# Define an enumeration for TimeoutStatus
 class TimeoutStatus(Enum):
     """
     Represents timeout status for HAProxy health checks.
@@ -205,6 +210,7 @@ class TimeoutStatus(Enum):
     L4TOUT = "L4TOUT"
 
 
+# Define an enumeration for MatchType
 class MatchType(Enum):
     """
     Represents match types for HAProxy health checks.
@@ -225,6 +231,7 @@ class MatchType(Enum):
     RSTRING = "rstring"
 
 
+# Define an enumeration for ErrorStatus
 class ErrorStatus(Enum):
     """
     Represents error status for HAProxy health checks.
@@ -243,6 +250,7 @@ class ErrorStatus(Enum):
     L4CON = "L4CON"
 
 
+# Define an enumeration for OkStatus
 class OkStatus(Enum):
     """
     Represents OK status for HAProxy health checks.
