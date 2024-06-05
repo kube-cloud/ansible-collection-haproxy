@@ -35,4 +35,3 @@ try:
     HAS_OVH = True
 except ImportError:
     HAS_OVH = False
-
