@@ -69,7 +69,7 @@ EXAMPLES = r'''
     state: 'present'
   register: haproxy_tx_result
 
-  - name: "Validate HA Proxy Transaction"
+- name: "Validate HA Proxy Transaction"
   kube_cloud.haproxy.haproxy_transaction:
     base_url: "http://localhost:5555"
     username: "admin"
@@ -79,7 +79,7 @@ EXAMPLES = r'''
     state: 'validate'
   register: haproxy_tx_result
 
-  - name: "Delete HA Proxy Transaction"
+- name: "Delete HA Proxy Transaction"
   kube_cloud.haproxy.haproxy_transaction:
     base_url: "http://localhost:5555"
     username: "admin"
