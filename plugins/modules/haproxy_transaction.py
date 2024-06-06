@@ -9,55 +9,55 @@ __metaclass__ = type
 
 
 DOCUMENTATION = '''
+---
 module: haproxy_transaction
 version_added: "1.0.0"
 short_description: Manage Transactions
 description:
-    - Used to Manage HA Proxy Transactions
-    - Create, Validate and Delete HA Proxy Transactions
+  - Used to Manage HA Proxy Transactions
+  - Create, Validate and Delete HA Proxy Transactions
 requirements: []
 author: Jean-Jacques ETUNE NGI (@jetune) <jetune@kube-cloud.com>
 options:
-    base_url:
-        description:
-            - The HA Proxy Dataplane API Base URL
-        required: true
-        type: str
-    username:
-        description:
-            - The HA Proxy Dataplane API Admin Username
-        required: true
-        type: str
-    password:
-        description:
-            - The HA Proxy Dataplane API Password
-        required: true
-        type: str
-    api_version:
-        description:
-            - The HA Proxy Dataplane API Version
-        required: false
-        type: str
-    transaction_id:
-      description:
-            - The Transaction ID (only if state is 'validated' or 'absent')
-        required: false
-        type: str
-    state:
-        description:
-            - The Transaction State
-        required: false
-        choices: ['present', 'validated', 'absent']
-        default: 'present'
-        type: str
-    target:
-        description:
-            - The value of the record
-            - It can be an IP, a FQDN, a text...
-        required: true
-        type: str
+  base_url:
+    description:
+      - The HA Proxy Dataplane API Base URL
+    required: true
+    type: str
+  username:
+    description:
+      - The HA Proxy Dataplane API Admin Username
+    required: true
+    type: str
+  password:
+    description:
+      - The HA Proxy Dataplane API Password
+    required: true
+    type: str
+  api_version:
+    description:
+      - The HA Proxy Dataplane API Version
+    required: false
+    type: str
+  transaction_id:
+    description:
+      - The Transaction ID (only if state is 'validated' or 'absent')
+    required: false
+    type: str
+  state:
+    description:
+      - The Transaction State
+    required: false
+    choices: ['present', 'validated', 'absent']
+    default: 'present'
+    type: str
+  target:
+    description:
+      - The value of the record
+      - It can be an IP, a FQDN, a text...
+    required: true
+    type: str
 '''
-
 
 EXAMPLES = r'''
 - name: "Create HA Proxy Transaction"
