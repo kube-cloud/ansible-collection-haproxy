@@ -27,11 +27,5 @@ EXAMPLES = r'''
 '''
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.kube_cloud.ovh.plugins.module_utils.ovh import ovh_client
+from ansible_collections.kube_cloud.haproxy.plugins.module_utils.haproxy import Client
 
-
-try:
-    from ovh.exceptions import APIError
-    HAS_OVH = True
-except ImportError:
-    HAS_OVH = False

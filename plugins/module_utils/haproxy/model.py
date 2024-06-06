@@ -500,9 +500,18 @@ class HttpCheckParams:
         uri (str): The URI used for the health check.
         version (str): The HTTP version.
     """
-    method: Optional[HttpMethod] = HttpMethod.GET
+    method: HttpMethod
     uri: str
-    version: str
+    version: str = "HTTP/1.1"
+
+    def __post_init__(self):
+
+        # Ajoutez ici des validations si nécessaire
+        if not self.method:
+            raise ValueError("The 'method' field is required.")
+
+        if not self.uri:
+            raise ValueError("The 'uri' field is required.")
 
 
 # Backend Configuration
