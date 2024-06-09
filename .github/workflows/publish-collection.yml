@@ -43,7 +43,7 @@ jobs:
           python -m pip install -r requirements.txt --disable-pip-version-check --prefer-binary --user
 
       - name: Perform sanity testing
-        uses: ansible-community/ansible-test-gh-action@release/v1
+        uses: ansible-community/ansible-test-gh-action@release/v1.15
         with:
           ansible-core-version: ${{ matrix.ansible }}
           target-python-version: ${{ matrix.python-version }}
