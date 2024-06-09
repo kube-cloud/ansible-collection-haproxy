@@ -37,6 +37,8 @@ jobs:
       - name: Install Required dependencies
         run: |
           python -m pip install --upgrade pip
+          pwd
+          ls -a
           pip install -r .github/workflows/requirements.txt
 
       - name: Perform sanity testing
