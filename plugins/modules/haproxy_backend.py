@@ -37,6 +37,7 @@ options:
     description:
       - The HA Proxy Dataplane API Version
     required: false
+    default: 'v2'
     type: str
   name:
     description:
@@ -99,8 +100,10 @@ def build_ansible_module():
         username=dict(type='str', required=True, no_log=True),
         password=dict(type='str', required=True, no_log=True),
         api_version=dict(type='str', required=False, default='v2'),
+        name=dict(type='str', required=True),
+        mode=dict(type='str', required=False, default='HTTP'),
         transaction_id=dict(type='str', required=False, default=''),
-        state=dict(type='bool', required=False, default='present', choices=['present', 'absent'])
+        state=dict(type='str', required=False, default='present', choices=['present', 'absent'])
     )
 
     # Build ansible Module
