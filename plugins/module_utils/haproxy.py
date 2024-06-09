@@ -1,11 +1,16 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-import requests
-from requests.auth import HTTPBasicAuth
 from typing import List, Dict, Optional
 from dataclasses import dataclass, field
 from enum import Enum
+
+try:
+    import requests
+    from requests.auth import HTTPBasicAuth # type: ignore
+    IMPORTS_OK = True
+except ImportError:
+    IMPORTS_OK = False
 
 
 # Definition of the enumeration EnableDisableEnum
