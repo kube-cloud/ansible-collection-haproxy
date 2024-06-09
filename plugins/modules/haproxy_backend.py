@@ -60,7 +60,7 @@ options:
     description:
       - The Transaction State
     required: false
-    choices: ['present', 'validated', 'absent']
+    choices: ['present', 'absent']
     default: 'present'
     type: str
 '''
