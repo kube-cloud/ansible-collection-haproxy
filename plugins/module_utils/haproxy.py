@@ -7,7 +7,7 @@ from enum import Enum
 
 try:
     import requests
-    from requests.auth import HTTPBasicAuth # type: ignore
+    from requests.auth import HTTPBasicAuth     # type: ignore
     IMPORTS_OK = True
 except ImportError:
     IMPORTS_OK = False
