@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 
 # Collection Directory
 COLLECTION_DIR="ansible_collections/kube_cloud/haproxy"
