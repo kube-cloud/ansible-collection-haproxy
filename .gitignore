@@ -1,5 +1,6 @@
 # Any Generated Archive
 *.tar.gz
+ansible_collections/
 
 # Tests Outputs
 test/output

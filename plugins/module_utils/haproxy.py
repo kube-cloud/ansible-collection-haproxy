@@ -922,4 +922,4 @@ def haproxy_client(module):
         module.fail_json(msg="Missing Client API Parameter")
 
     # Build and Return Client
-    return Client(**{ credential: module.params[credential] for credential in credential_keys })
+    return Client(**{credential: module.params[credential] for credential in credential_keys})
