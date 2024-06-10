@@ -302,17 +302,17 @@ class Balance:
     """
     algorithm: LoadBalancingAlgorithm
     hash_expression: Optional[str] = None
-    hdr_name:  Optional[str] = None
+    hdr_name: Optional[str] = None
     hdr_use_domain_only: Optional[bool] = None
     random_draws: Optional[int] = None
-    rdp_cookie_name:  Optional[str] = None
+    rdp_cookie_name: Optional[str] = None
     uri_depth: Optional[int] = None
     uri_len: Optional[int] = None
     uri_path_only: Optional[bool] = None
     uri_whole: Optional[bool] = None
-    url_param:  Optional[str] = None
+    url_param: Optional[str] = None
     url_param_check_post: Optional[int] = None
-    url_param_max_wait:  Optional[int] = None
+    url_param_max_wait: Optional[int] = None
 
     def __post_init__(self):
 
@@ -578,7 +578,7 @@ class Client:
     # URL Format
     URL_TEMPLATE = "{base_url}/{version}/{uri}"
 
-    def __init__(self, base_url:str, api_version:str, username:str, password:str):
+    def __init__(self, base_url: str, api_version: str, username: str, password: str):
         """
         Initializes the HAProxyClient with the given base URL and credentials.
 
@@ -685,7 +685,7 @@ class Client:
             # Raise Exception
             response.raise_for_status()
 
-    def validate_transaction(self, transaction_id:str):
+    def validate_transaction(self, transaction_id: str):
         """
         Validate HAProxy Data Plane API Transaction and Details.
 
@@ -749,7 +749,7 @@ class Client:
             # Raise Exception
             response.raise_for_status()
 
-    def get_backend(self, name:str):
+    def get_backend(self, name: str):
         """
         Retrieves the details of given Backend (name) from the HAProxy Data Plane API.
 
@@ -816,7 +816,7 @@ class Client:
             # Raise Exception
             response.raise_for_status()
 
-    def get_frontend(self, name:str):
+    def get_frontend(self, name: str):
         """
         Retrieves the details of given Frontend (name) from the HAProxy Data Plane API.
 
@@ -851,7 +851,7 @@ class Client:
             # Raise Exception
             response.raise_for_status()
 
-    def create_backend(self, backend:Backend, transaction_id:str, force_reload:bool=True):
+    def create_backend(self, backend: Backend, transaction_id: str, force_reload: bool = True):
         """
         Create a Backend on HAProxy API.
 
@@ -916,7 +916,7 @@ class Client:
             # Raise Exception
             response.raise_for_status()
 
-    def update_backend(self, name:str, backend:Backend, transaction_id:str, force_reload:bool=True):
+    def update_backend(self, name: str, backend: Backend, transaction_id: str, force_reload: bool = True):
         """
         Update a Backend on HAProxy API.
 
@@ -982,7 +982,7 @@ class Client:
             # Raise Exception
             response.raise_for_status()
 
-    def delete_backend(self, name:str, transaction_id:str, force_reload:bool=True):
+    def delete_backend(self, name: str, transaction_id: str, force_reload: bool = True):
         """
         Delete a Backend on HAProxy API.
 
@@ -1045,7 +1045,7 @@ class Client:
 
 
 # Build and Return HA Proxy Client from Module Informations
-def haproxy_client(module:AnsibleModule):
+def haproxy_client(module: AnsibleModule):
 
     # Required Module Keys
     credential_keys = [

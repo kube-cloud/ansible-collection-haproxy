@@ -10,7 +10,7 @@ from typing import Optional, List, Dict, Any
 def dataclass_to_payload(instance: Any) -> Dict[str, Any]:
     """
     Converts a dataclass instance to a dictionary payload.
-    
+
     Only includes fields that are not None and handles nested dataclasses and lists.
 
     Args:

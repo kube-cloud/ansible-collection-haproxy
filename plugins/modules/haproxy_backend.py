@@ -143,7 +143,7 @@ except ImportError:
 
 
 # Find and Return Backend
-def get_backend(module:AnsibleModule, client:Client, name:str):
+def get_backend(module: AnsibleModule, client: Client, name: str):
 
     try:
 
@@ -162,7 +162,7 @@ def get_backend(module:AnsibleModule, client:Client, name:str):
 
 
 # Update Backend
-def update_backend(module:AnsibleModule, client:Client, transaction_id:str, name:str, backend:Backend, force_reload:bool):
+def update_backend(module: AnsibleModule, client: Client, transaction_id: str, name: str, backend: Backend, force_reload: bool):
 
     try:
 
@@ -187,7 +187,7 @@ def update_backend(module:AnsibleModule, client:Client, transaction_id:str, name
 
 
 # Create Backend
-def create_backend(module:AnsibleModule, client:Client, transaction_id:str, backend:Backend, force_reload:bool):
+def create_backend(module: AnsibleModule, client: Client, transaction_id: str, backend: Backend, force_reload: bool):
 
     try:
 
@@ -211,7 +211,7 @@ def create_backend(module:AnsibleModule, client:Client, transaction_id:str, back
 
 
 # Delete Backend
-def delete_backend(module:AnsibleModule, client:Client, transaction_id:str, name:str, force_reload:bool):
+def delete_backend(module: AnsibleModule, client: Client, transaction_id: str, name: str, force_reload: bool):
 
     try:
 
@@ -259,7 +259,7 @@ def build_ansible_module():
 
 
 # Porcess Module Execution
-def run_module(module:AnsibleModule, client:Client):
+def run_module(module: AnsibleModule, client: Client):
 
     # Extract Trasaction ID
     transaction_id = module.params['transaction_id']
@@ -281,44 +281,44 @@ def run_module(module:AnsibleModule, client:Client):
 
     # Find Existing Instance
     existing_backend = get_backend(
-      module=module,
-      client=client,
-      name=backend.name
+        module=module,
+        client=client,
+        name=backend.name
     )
 
     # If Requested State is 'present' and Instance Already exists
     if existing_backend and state == 'present':
-      
-      # If Existing Instance match requested Instance
-      if existing_backend == backend:
 
-        # Initialize response (No Change)
-        module.exit_json(
-            msg="Backend [{0} - {1}] Not Changed".format(backend.name, backend.mode),
-            changed=False
-        )
-      
-        # Update Existing Instance
-        update_backend(
-          module=module,
-          client=client,
-          transaction_id=transaction_id,
-          name=backend.name,
-          backend=backend,
-          force_reload=force_reload
-        )
+        # If Existing Instance match requested Instance
+        if existing_backend == backend:
 
-        # Module Response : Changed
-        module.exit_json(
-            changed=True,
-            msg="Backend [{0} - {1}] Has Been Updated".format(backend.name, backend.mode)
-        )
+            # Initialize response (No Change)
+            module.exit_json(
+                msg="Backend [{0} - {1}] Not Changed".format(backend.name, backend.mode),
+                changed=False
+            )
+          
+            # Update Existing Instance
+            update_backend(
+                module=module,
+                client=client,
+                transaction_id=transaction_id,
+                name=backend.name,
+                backend=backend,
+                force_reload=force_reload
+            )
 
-        # Initialize Module Response : Changed
-        module.exit_json(
-            changed=True,
-            msg="[{0} - {1}] Has been Updated".format(backend.name, backend.mode)
-        )
+            # Module Response : Changed
+            module.exit_json(
+                changed=True,
+                msg="Backend [{0} - {1}] Has Been Updated".format(backend.name, backend.mode)
+            )
+
+            # Initialize Module Response : Changed
+            module.exit_json(
+                changed=True,
+                msg="[{0} - {1}] Has been Updated".format(backend.name, backend.mode)
+            )
 
     # If Requested State is 'present' and Instance don't exists
     if not existing_backend and state == 'present':
