@@ -297,7 +297,7 @@ def run_module(module: AnsibleModule, client: Client):
                 msg="Backend [{0} - {1}] Not Changed".format(backend.name, backend.mode),
                 changed=False
             )
-          
+
             # Update Existing Instance
             update_backend(
                 module=module,
@@ -325,11 +325,11 @@ def run_module(module: AnsibleModule, client: Client):
 
         # Create Instance
         create_backend(
-          module=module,
-          client=client,
-          transaction_id=transaction_id,
-          backend=backend,
-          force_reload=force_reload
+            module=module,
+            client=client,
+            transaction_id=transaction_id,
+            backend=backend,
+            force_reload=force_reload
         )
 
         # Initialize Module Response : Changed
