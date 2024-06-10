@@ -133,7 +133,7 @@ EXAMPLES = r'''
 '''
 
 from ansible.module_utils.basic import AnsibleModule
-from plugins.module_utils.haproxy import haproxy_client, ProxyProtocol, Balance, HttpHealthCheck, HttpCheckParams, Backend, Client
+from ansible_collections.kube_cloud.haproxy.plugins.module_utils.haproxy import haproxy_client, ProxyProtocol, Balance, HttpHealthCheck, HttpCheckParams, Backend, Client
 
 try:
     from requests import HTTPError  # type: ignore
