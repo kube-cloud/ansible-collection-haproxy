@@ -1,9 +1,5 @@
 ---
 requires_ansible: '>=2.10'
-plugin_routing:
-  modules:
-    haproxy_backend:
-      redirect: kube_cloud.haproxy.haproxy_backend
 
 # Collections must specify a minimum required ansible version to upload
 # to galaxy
