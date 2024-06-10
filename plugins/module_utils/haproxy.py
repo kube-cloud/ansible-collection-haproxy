@@ -4,6 +4,8 @@ __metaclass__ = type
 from typing import List, Dict, Optional
 from dataclasses import dataclass, field
 from enum import Enum
+from ansible.module_utils.basic import AnsibleModule
+from plugins.module_utils.commons import dataclass_to_payload
 
 try:
     import requests
@@ -299,18 +301,18 @@ class Balance:
         url_param_max_wait (int): The maximum wait time for a URL parameter-based balancing response.
     """
     algorithm: LoadBalancingAlgorithm
-    hash_expression: str
-    hdr_name: str
-    hdr_use_domain_only: bool
-    random_draws: int
-    rdp_cookie_name: str
-    uri_depth: int
-    uri_len: int
-    uri_path_only: bool
-    uri_whole: bool
-    url_param: str
-    url_param_check_post: int
-    url_param_max_wait: int
+    hash_expression: Optional[str] = None
+    hdr_name:  Optional[str] = None
+    hdr_use_domain_only: Optional[bool] = None
+    random_draws: Optional[int] = None
+    rdp_cookie_name:  Optional[str] = None
+    uri_depth: Optional[int] = None
+    uri_len: Optional[int] = None
+    uri_path_only: Optional[bool] = None
+    uri_whole: Optional[bool] = None
+    url_param:  Optional[str] = None
+    url_param_check_post: Optional[int] = None
+    url_param_max_wait:  Optional[int] = None
 
     def __post_init__(self):
 
@@ -540,11 +542,20 @@ class Client:
         auth (HTTPBasicAuth): The HTTP basic authentication credentials.
     """
 
+    # Définir la constante pour application/json
+    CONTENT_TYPE_JSON = "application/json"
+
     # Backends URI
     CONFIG_VERSION_URI = "services/haproxy/configuration/version"
 
     # Backends URI
     BACKENDS_URI = "services/haproxy/configuration/backends"
+
+    # Backend URI Template with Transaction ID
+    BACKEND_URI_TEMPLATE_TX = "{backend_uri}/{transaction_id}"
+
+    # Backend URI Template with Config Version and Force Reload
+    BACKEND_URI_TEMPLATE_VERSION = "{backend_uri}?version={config_version}&force_reload={force_reload}"
 
     # Backend URI
     BACKEND_URI = "services/haproxy/configuration/backends/{name}"
@@ -567,7 +578,7 @@ class Client:
     # URL Format
     URL_TEMPLATE = "{base_url}/{version}/{uri}"
 
-    def __init__(self, base_url, api_version, username, password):
+    def __init__(self, base_url:str, api_version:str, username:str, password:str):
         """
         Initializes the HAProxyClient with the given base URL and credentials.
 
@@ -674,7 +685,7 @@ class Client:
             # Raise Exception
             response.raise_for_status()
 
-    def validate_transaction(self, transaction_id):
+    def validate_transaction(self, transaction_id:str):
         """
         Validate HAProxy Data Plane API Transaction and Details.
 
@@ -738,7 +749,7 @@ class Client:
             # Raise Exception
             response.raise_for_status()
 
-    def get_backend(self, name):
+    def get_backend(self, name:str):
         """
         Retrieves the details of given Backend (name) from the HAProxy Data Plane API.
 
@@ -805,7 +816,7 @@ class Client:
             # Raise Exception
             response.raise_for_status()
 
-    def get_frontend(self, name):
+    def get_frontend(self, name:str):
         """
         Retrieves the details of given Frontend (name) from the HAProxy Data Plane API.
 
@@ -840,14 +851,14 @@ class Client:
             # Raise Exception
             response.raise_for_status()
 
-    def create_backend(self, backend, transaction_id):
+    def create_backend(self, backend:Backend, transaction_id:str, force_reload:bool=True):
         """
         Create a Backend on HAProxy API.
 
         Args:
-            backend (str): The backend to create.
-            servers (list): List of Servers to Add to Backend
+            backend (Backend): The backend to create.
             transaction_id (str): Started Transaction ID
+            force_reload (bool): Force Reload HA Proxy Configuration (used if no Transaction ID Provided)
 
         Returns:
             dict: Details of Created Backend in JSON format.
@@ -860,7 +871,7 @@ class Client:
         if transaction_id and transaction_id.strip():
 
             # Initialize URI
-            create_backend_uri = "{backend_uri}/{transaction_id}".format(
+            create_backend_uri = self.BACKEND_URI_TEMPLATE_TX.format(
                 backend_uri=self.BACKENDS_URI,
                 transaction_id=transaction_id
             )
@@ -871,9 +882,10 @@ class Client:
             config_version = self.get_configuration_version()
 
             # Initialize URI
-            create_backend_uri = "{be_uri}?version={config_version}".format(
-                be_uri=self.BACKENDS_URI,
-                config_version=config_version
+            create_backend_uri = self.BACKEND_URI_TEMPLATE_VERSION.format(
+                backend_uri=self.BACKENDS_URI,
+                config_version=config_version,
+                force_reload=force_reload
             )
 
         # Build the Operation URL
@@ -886,9 +898,136 @@ class Client:
         # Execute Request
         response = requests.post(
             url=url,
-            json=backend,
+            json=dataclass_to_payload(backend),
             headers={
-                "Content-Type": "application/json"
+                "Content-Type": self.CONTENT_TYPE_JSON
+            },
+            auth=self.auth
+        )
+
+        # If Object Exists
+        if response.status_code == 200:
+
+            # Return JSON
+            return response.json()
+
+        else:
+
+            # Raise Exception
+            response.raise_for_status()
+
+    def update_backend(self, name:str, backend:Backend, transaction_id:str, force_reload:bool=True):
+        """
+        Update a Backend on HAProxy API.
+
+        Args:
+            name (str): The Backend Name
+            backend (Backend): The backend to create.
+            transaction_id (str): Started Transaction ID
+            force_reload (bool): Force Reload HA Proxy Configuration (used if no Transaction ID Provided)
+
+        Returns:
+            dict: Details of Created Backend in JSON format.
+
+        Raises:
+            requests.exceptions.HTTPError: If the API request fails.
+        """
+
+        # If Transaction IF is Provided
+        if transaction_id and transaction_id.strip():
+
+            # Initialize URI
+            create_backend_uri = self.BACKEND_URI_TEMPLATE_TX.format(
+                backend_uri=self.BACKEND_URI.format("name", name),
+                transaction_id=transaction_id
+            )
+
+        else:
+
+            # Get Configuration Version
+            config_version = self.get_configuration_version()
+
+            # Initialize URI
+            create_backend_uri = self.BACKEND_URI_TEMPLATE_VERSION.format(
+                backend_uri=self.BACKEND_URI.format("name", name),
+                config_version=config_version,
+                force_reload=force_reload
+            )
+
+        # Build the Operation URL
+        url = self.URL_TEMPLATE.format(
+            base_url=self.base_url,
+            uri=create_backend_uri,
+            version=self.api_version
+        )
+
+        # Execute Request
+        response = requests.put(
+            url=url,
+            json=dataclass_to_payload(backend),
+            headers={
+                "Content-Type": self.CONTENT_TYPE_JSON
+            },
+            auth=self.auth
+        )
+
+        # If Object Exists
+        if response.status_code == 200:
+
+            # Return JSON
+            return response.json()
+
+        else:
+
+            # Raise Exception
+            response.raise_for_status()
+
+    def delete_backend(self, name:str, transaction_id:str, force_reload:bool=True):
+        """
+        Delete a Backend on HAProxy API.
+
+        Args:
+            name (str): The Backend Name
+            transaction_id (str): Started Transaction ID
+            force_reload (bool): Force Reload HA Proxy Configuration (used if no Transaction ID Provided)
+
+        Raises:
+            requests.exceptions.HTTPError: If the API request fails.
+        """
+
+        # If Transaction IF is Provided
+        if transaction_id and transaction_id.strip():
+
+            # Initialize URI
+            create_backend_uri = self.BACKEND_URI_TEMPLATE_TX.format(
+                backend_uri=self.BACKEND_URI.format("name", name),
+                transaction_id=transaction_id
+            )
+
+        else:
+
+            # Get Configuration Version
+            config_version = self.get_configuration_version()
+
+            # Initialize URI
+            create_backend_uri = self.BACKEND_URI_TEMPLATE_VERSION.format(
+                backend_uri=self.BACKEND_URI.format("name", name),
+                config_version=config_version,
+                force_reload=force_reload
+            )
+
+        # Build the Operation URL
+        url = self.URL_TEMPLATE.format(
+            base_url=self.base_url,
+            uri=create_backend_uri,
+            version=self.api_version
+        )
+
+        # Execute Request
+        response = requests.delete(
+            url=url,
+            headers={
+                "Content-Type": self.CONTENT_TYPE_JSON
             },
             auth=self.auth
         )
@@ -906,7 +1045,7 @@ class Client:
 
 
 # Build and Return HA Proxy Client from Module Informations
-def haproxy_client(module):
+def haproxy_client(module:AnsibleModule):
 
     # Required Module Keys
     credential_keys = [
