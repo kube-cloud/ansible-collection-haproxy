@@ -53,7 +53,7 @@ jobs:
   publish:
     needs: sanity
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop_old'
+    if: github.ref == 'refs/heads/develop'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
