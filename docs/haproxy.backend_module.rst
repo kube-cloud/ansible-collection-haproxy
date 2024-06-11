@@ -122,10 +122,10 @@ Parameters
             <td>
                 <pre>
                     <code>
-                    httpchk_params:
-                        method: GET
-                        uri: "/login"
-                        version: "HTTP/1.1"
+    httpchk_params:
+        method: GET
+        uri: "/login"
+        version: "HTTP/1.1"
                     </code>
                 </pre>
             </td>
@@ -139,37 +139,37 @@ Parameters
             <td>
                 <pre>
                     <code>
-                http_health_check:
-                    type: "http"
-                    method: "GET"
-                    uri: "/health"
-                    uri_log_format: "%[req.hdr(Host)]%[url]"
-                    var_expr: "some_expression"
-                    var_format: "some_format"
-                    var_name: "some_variable"
-                    var_scope: "some_scope"
-                    version: "HTTP/1.1"
-                    via_socks4: false
-                    port: 80
-                    port_string: "8080"
-                    proto: "HTTP"
-                    send_proxy: true
-                    sni: "example.com"
-                    ssl: true
-                    status_code: "200"
-                    tout_status: "L7TOUT"
-                    match: "status"
-                    headers:
-                        - name: "Host"
-                        value: "example.com"
-                        - name: "User-Agent"
-                        value: "haproxy"
-                    body: "Expected response body"
-                    body_log_format: "%[res.body]"
-                    check_comment: "Health check for service"
-                    default: false
-                    error_status: "L7RSP"
-                    addr: "192.168.1.1"
+    http_health_check:
+        type: "http"
+        method: "GET"
+        uri: "/health"
+        uri_log_format: "%[req.hdr(Host)]%[url]"
+        var_expr: "some_expression"
+        var_format: "some_format"
+        var_name: "some_variable"
+        var_scope: "some_scope"
+        version: "HTTP/1.1"
+        via_socks4: false
+        port: 80
+        port_string: "8080"
+        proto: "HTTP"
+        send_proxy: true
+        sni: "example.com"
+        ssl: true
+        status_code: "200"
+        tout_status: "L7TOUT"
+        match: "status"
+        headers:
+            - name: "Host"
+            value: "example.com"
+            - name: "User-Agent"
+            value: "haproxy"
+        body: "Expected response body"
+        body_log_format: "%[res.body]"
+        check_comment: "Health check for service"
+        default: false
+        error_status: "L7RSP"
+        addr: "192.168.1.1"
                     ok_status: "L7OK"
                     </code>
                 </pre>
