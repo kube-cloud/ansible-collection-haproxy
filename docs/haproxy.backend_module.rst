@@ -1,0 +1,179 @@
+
+**************************
+kube_cloud.haproxy.backend
+**************************
+
+**Install and Configure HA Proxy on Linux Based OS.**
+
+Version added: 1.0.0
+
+.. contents::
+   :local:
+   :depth: 1
+
+Synopsis
+--------
+- Install and Configure HA Proxy.
+
+Requirements
+------------
+The below requirements are needed on the host that executes this module.
+
+- community.general: 4.0.0+
+
+Parameters
+----------
+
+.. raw:: html
+
+    <table  border=0 cellpadding=0 class="documentation-table">
+        <tr>
+            <th colspan="1">Parameter</th>
+            <th colspan="1">Type</th>
+            <th colspan="1">Required</th>
+            <th>Choices/<font color="blue">Defaults</font></th>
+            <th colspan="1">Example</th>
+            <th width="100%">Description</th>
+        </tr>
+        <tr>
+            <td colspan="1">base_url</td>
+            <td>str</td>
+            <td>Yes</td>
+            <td></td>
+            <td>http://localhost:5555</td>
+            <td>HA Proxy Dataplane API Base URL</td>
+        </tr>
+        <tr>
+            <td colspan="1">username</td>
+            <td>str</td>
+            <td>Yes</td>
+            <td></td>
+            <td>admin</td>
+            <td>HA Proxy Dataplane API Administrator Username</td>
+        </tr>
+        <tr>
+            <td colspan="1">password</td>
+            <td>str</td>
+            <td>Yes</td>
+            <td></td>
+            <td>admin</td>
+            <td>HA Proxy Dataplane API Administrator Password</td>
+        </tr>
+        <tr>
+            <td colspan="1">api_version</td>
+            <td>str</td>
+            <td>No</td>
+            <td>v2</td>
+            <td>v1</td>
+            <td>HA Proxy Dataplane API Version</td>
+        </tr>
+        <tr>
+            <td colspan="1">transaction_id</td>
+            <td>str</td>
+            <td>No</td>
+            <td></td>
+            <td>88a7601b-6960-4263-873f-b5e3040c80a2</td>
+            <td>HA Proxy Dataplane API Transaction (if your operation is embedded in existing TX)</td>
+        </tr>
+        <tr>
+            <td colspan="1">name</td>
+            <td>str</td>
+            <td>Yes</td>
+            <td></td>
+            <td>jenkins-backend-service</td>
+            <td>HA Proxy Backend Name</td>
+        </tr>
+        <tr>
+            <td colspan="1">mode</td>
+            <td>str</td>
+            <td>Yes</td>
+            <td>
+                <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                    <li><b>HTTP</b></li>
+                    <li>TCP</li>
+                </ul>
+            </td>
+            <td>HTTP</td>
+            <td>HA Proxy Backend Mode</td>
+        </tr>
+        <tr>
+            <td colspan="1">balance</td>
+            <td>dict</td>
+            <td>No</td>
+            <td></td>
+            <td>
+                <pre>
+                    <code>
+                        balance:
+                            algorithm: roundrobin
+                            hdr_use_domain_only: false
+                            uri_path_only: false
+                            uri_whole: true
+                    </code>
+                </pre>
+            </td>
+            <td>HA Proxy Backend Balancing Configuration</td>
+        </tr>
+        <tr>
+            <td colspan="1">httpchk_params</td>
+            <td>dict</td>
+            <td>No</td>
+            <td></td>
+            <td>
+                <pre>
+                    <code>
+                        httpchk_params:
+                            method: GET
+                            uri: "/login"
+                            version: "HTTP/1.1"
+                    </code>
+                </pre>
+            </td>
+            <td>HA Proxy Backend Inline HTTP Healtcheck Configuration</td>
+        </tr>
+    </table>
+
+Examples
+--------
+
+.. code-block:: yaml
+
+    - name: "Create HA Proxy Backend"
+      kube_cloud.haproxy.backend:
+        base_url: "http://localhost:5555"
+        username: "admin"
+        password: "admin"
+        api_version: "v2"
+        name: "jira-backend-service"
+        mode: 'HTTP'
+        balance:
+        algorithm: roundrobin
+        hdr_use_domain_only: false
+        uri_path_only: false
+        uri_whole: true
+        httpchk_params:
+        method: GET
+        uri: "/login"
+        version: "HTTP/1.1"
+        transaction_id: "88a7601b-6960-4263-873f-b5e3040c80a2"
+        state: 'present'
+
+    - name: "Create HA Proxy Backend"
+      kube_cloud.haproxy.backend:
+        base_url: "http://localhost:5555"
+        username: "admin"
+        password: "admin"
+        api_version: "v2"
+        name: "jira-backend-service"
+        mode: 'HTTP'
+        balance:
+        algorithm: roundrobin
+        hdr_use_domain_only: false
+        uri_path_only: false
+        uri_whole: true
+        httpchk_params:
+        method: GET
+        uri: "/login"
+        version: "HTTP/1.1"
+        transaction_id: "88a7601b-6960-4263-873f-b5e3040c80a2"
+        state: 'absent'

@@ -9,7 +9,7 @@ __metaclass__ = type
 
 DOCUMENTATION = '''
 ---
-module: haproxy_backend
+module: backend
 version_added: "1.0.0"
 short_description: Manage Backends
 description:
@@ -90,7 +90,7 @@ options:
 
 EXAMPLES = r'''
 - name: "Create HA Proxy Backend"
-  kube_cloud.haproxy.haproxy_backend:
+  kube_cloud.haproxy.backend:
     base_url: "http://localhost:5555"
     username: "admin"
     password: "admin"
@@ -110,7 +110,7 @@ EXAMPLES = r'''
     state: 'present'
 
 - name: "Create HA Proxy Backend"
-  kube_cloud.haproxy.haproxy_backend:
+  kube_cloud.haproxy.backend:
     base_url: "http://localhost:5555"
     username: "admin"
     password: "admin"

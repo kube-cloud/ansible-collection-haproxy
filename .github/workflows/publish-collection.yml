@@ -2,18 +2,14 @@ name: Test Ansible Collection
 
 on:
   push:
+    branches:
+      - 'develop'
     paths:
       - 'plugins/**'
       - 'roles/**'
       - 'tests/**'
       - 'meta/**'
-      - '.github/workflows/publish-collection.yml'
-  pull_request:
-    paths:
-      - 'plugins/**'
-      - 'roles/**'
-      - 'tests/**'
-      - 'meta/**'
+      - 'galaxy.yml'
       - '.github/workflows/publish-collection.yml'
 
 jobs:
@@ -26,11 +22,12 @@ jobs:
           - ubuntu-22.04
         python-version:
           - 3.7
-
+          - 3.8
+          - 3.9
+          - 3.10
+          - 3.11
     runs-on: ${{ matrix.os }}
-
     steps:
-
       - name: Perform sanity testing
         uses: ansible-community/ansible-test-gh-action@release/v1.15
         with:
@@ -46,11 +43,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
 
       - name: Install dependencies
         run: |
@@ -71,4 +63,3 @@ jobs:
           MODULE_NAME=$(yq e '.name' galaxy.yml)
           echo "Module : [Namespace : $MODULE_NAMESPACE, Name : $MODULE_NAME, Version: $MODULE_VERSION]"
           ansible-galaxy collection publish $MODULE_NAMESPACE-$MODULE_NAME-$MODULE_VERSION.tar.gz --api-key ${{ secrets.ANSIBLE_GALAXY_API_KEY}}
-  
