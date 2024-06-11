@@ -166,11 +166,11 @@ Parameters
             value: "haproxy"
         body: "Expected response body"
         body_log_format: "%[res.body]"
-        check_comment: "Health check for service"
+        check_comment: "Health check"
         default: false
         error_status: "L7RSP"
         addr: "192.168.1.1"
-                    ok_status: "L7OK"
+        ok_status: "L7OK"
                     </code>
                 </pre>
             </td>
