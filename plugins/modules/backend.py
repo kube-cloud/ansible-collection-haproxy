@@ -1,3 +1,4 @@
+# (c) 2024, Jean-Jacques ETUNE NGI <jetune@kube-cloud.com>
 # -*- coding: utf-8 -*-
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -258,6 +259,22 @@ def build_ansible_module():
     )
 
 
+# Instantiate Ansible Module
+def build_client(module: AnsibleModule):
+
+    try:
+
+        # Build Client from Module
+        return haproxy_client(module.params)
+
+    except ValueError:
+
+        # Set Module Error
+        module.fail_json(
+            msg="[Build Client] - Failed Build HA Proxy Dataplane API Client"
+        )
+
+
 # Porcess Module Execution
 def run_module(module: AnsibleModule, client: Client):
 
@@ -372,8 +389,8 @@ def main():
     # Build Module
     module = build_ansible_module()
 
-    # Build OVH Client from Module
-    client = haproxy_client(module)
+    # Build Client from Module
+    client = build_client(module)
 
     # Execute Module
     run_module(module, client)

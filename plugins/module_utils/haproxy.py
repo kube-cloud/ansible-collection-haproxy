@@ -4,7 +4,6 @@ __metaclass__ = type
 from typing import List, Dict, Optional
 from dataclasses import dataclass, field
 from enum import Enum
-from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.kube_cloud.haproxy.plugins.module_utils.commons import dataclass_to_payload
 
 try:
@@ -1044,8 +1043,8 @@ class Client:
             response.raise_for_status()
 
 
-# Build and Return HA Proxy Client from Module Informations
-def haproxy_client(module: AnsibleModule):
+# Build and Return HA Proxy Client from Dictionnary Vars
+def haproxy_client(params: dict):
 
     # Required Module Keys
     credential_keys = [
@@ -1055,15 +1054,14 @@ def haproxy_client(module: AnsibleModule):
         'password'
     ]
 
-    # Match Required Keys with Module Parameters
-    # Find each credential_keys entry in module.params (Build Boolean array)
-    credential_parameters = [cred_key in module.params for cred_key in credential_keys]
+    # Match Required Keys with Parameters (Build Boolean array)
+    credential_parameters = [cred_key in params for cred_key in credential_keys]
 
     # If All Credentials keyx are present in Module Parameters
     if not all(credential_parameters):
 
         # Error Message for Module
-        module.fail_json(msg="Missing Client API Parameter")
+        raise ValueError("Missing Client API Parameters")
 
     # Build and Return Client
-    return Client(**{credential: module.params[credential] for credential in credential_keys})
+    return Client(**{credential: params[credential] for credential in credential_keys})
