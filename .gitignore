@@ -1,7 +1,10 @@
+
+
 # Any Generated Archive
 *.tar.gz
 ansible_collections/
 sanity.sh
+tests/output/
 
 # Tests Outputs
 test/output
