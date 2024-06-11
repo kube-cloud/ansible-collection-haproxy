@@ -1,4 +1,4 @@
-name: Test Ansible Collection
+name: Check Ansible Collection (Sanity)
 
 on:
   push:
@@ -14,7 +14,7 @@ on:
       - 'roles/**'
       - 'tests/**'
       - 'meta/**'
-      - '.github/workflows/publish-collection.yml'
+      - '.github/workflows/sanity-checks.yml'
 
 jobs:
   sanity:
