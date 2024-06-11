@@ -101,9 +101,9 @@ Parameters
             <td>dict</td>
             <td>No</td>
             <td></td>
-            <td style="text-align: left;">
-                <pre style="text-align: left;">
-                    <code style="text-align: left;">
+            <td>
+                <pre>
+                    <code>
     balance:
         algorithm: roundrobin
         hdr_use_domain_only: false
