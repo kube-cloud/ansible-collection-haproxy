@@ -5,7 +5,7 @@ from typing import List, Dict, Optional
 from dataclasses import dataclass, field
 from enum import Enum
 from ansible.module_utils.basic import AnsibleModule
-from plugins.module_utils.commons import dataclass_to_payload
+from ansible_collections.kube_cloud.haproxy.plugins.module_utils.commons import dataclass_to_payload
 
 try:
     import requests

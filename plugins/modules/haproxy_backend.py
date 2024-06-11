@@ -56,24 +56,22 @@ options:
     description:
       - The HA Proxy Backend Load Balancing
     required: false
-    default: {}
     type: dict
   httpchk:
     description:
       - The HA Proxy Backend Default HealthCheck Configuration
     required: false
-    default: {}
     type: dict
   httpchk_params:
     description:
       - The HA Proxy Backend Secrver HealthCheck Configuration
     required: false
-    default: {}
     type: dict
   transaction_id:
     description:
       - The Transaction ID (If need to execute action as part of API Transaction)
     required: false
+    default: ""
     type: str
   force_reload:
     description:
@@ -245,10 +243,11 @@ def build_ansible_module():
         api_version=dict(type='str', required=False, default='v2'),
         name=dict(type='str', required=True),
         mode=dict(type='str', required=False, default='HTTP', choices=['HTTP', 'TCP']),
-        balance=dict(type=dict, required=False, default={}),
-        httpchk=dict(type=dict, required=False, default={}),
-        httpchk_params=dict(type=dict, required=False, default={}),
+        balance=dict(type='dict', required=False, default=None),
+        httpchk=dict(type='dict', required=False, default=None),
+        httpchk_params=dict(type='dict', required=False, default=None),
         transaction_id=dict(type='str', required=False, default=''),
+        force_reload=dict(type='bool', required=False, default=True),
         state=dict(type='str', required=False, default='present', choices=['present', 'absent'])
     )
 

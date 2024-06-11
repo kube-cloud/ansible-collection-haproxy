@@ -1,0 +1,10 @@
+{
+    "docs": "https://docs.ansible.com/ansible-core/2.15/dev_guide/testing/sanity/compile.html", 
+    "results": [
+        {
+            "message": "The test `ansible-test sanity --test compile --python 2.7` [[explain](https://docs.ansible.com/ansible-core/2.15/dev_guide/testing/sanity/compile.html)] failed with 3 errors:", 
+            "output": "plugins/module_utils/commons.py:10:34: SyntaxError: def dataclass_to_payload(instance: Any) -> Dict[str, Any]:\nplugins/module_utils/haproxy.py:303:14: SyntaxError: algorithm: LoadBalancingAlgorithm\nplugins/modules/haproxy_backend.py:147:23: SyntaxError: def get_backend(module: AnsibleModule, client: Client, name: str):"
+        }
+    ], 
+    "verified": false
+}

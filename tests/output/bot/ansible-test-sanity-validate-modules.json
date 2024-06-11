@@ -1,0 +1,10 @@
+{
+    "docs": "https://docs.ansible.com/ansible-core/2.15/dev_guide/testing/sanity/validate-modules.html", 
+    "results": [
+        {
+            "message": "The test `ansible-test sanity --test validate-modules` [[explain](https://docs.ansible.com/ansible-core/2.15/dev_guide/testing/sanity/validate-modules.html)] failed with 4 errors:", 
+            "output": "plugins/modules/haproxy_backend.py:0:0: doc-default-incompatible-type: Argument 'httpchk' in documentation defines default as ('None') but this is incompatible with parameter type 'dict'\nplugins/modules/haproxy_backend.py:0:0: doc-default-incompatible-type: Argument 'httpchk_params' in documentation defines default as ('None') but this is incompatible with parameter type 'dict'\nplugins/modules/haproxy_backend.py:0:0: incompatible-default-type: DOCUMENTATION.options.httpchk: Argument defines default as ('None') but this is incompatible with parameter type dict: Value must be dictionary for dictionary value @ data['options']['httpchk']. Got {'description': ['The HA Proxy Backend Default HealthCheck Configuration'], 'required': False, 'default': 'None', 'type': 'dict'}\nplugins/modules/haproxy_backend.py:0:0: incompatible-default-type: DOCUMENTATION.options.httpchk_params: Argument defines default as ('None') but this is incompatible with parameter type dict: Value must be dictionary for dictionary value @ data['options']['httpchk_params']. Got {'description': ['The HA Proxy Backend Secrver HealthCheck Configuration'], 'required': False, 'default': 'None', 'type': 'dict'}"
+        }
+    ], 
+    "verified": false
+}
