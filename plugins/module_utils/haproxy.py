@@ -572,7 +572,10 @@ class Client:
     CREATE_TRANSACTION_URI = "services/haproxy/configuration/transactions?version={config_number}"
 
     # Validate Transaction URI
-    VALIDATE_TRANSACTION_URI = "services/haproxy/configuration/transactions/{transaction_id}"
+    VALIDATE_TRANSACTION_URI = "services/haproxy/configuration/transactions/{transaction_id}&force_reload={force_reload}"
+
+    # Cancel Transaction URI
+    CANCEL_TRANSACTION_URI = "services/haproxy/configuration/transactions/{transaction_id}"
 
     # URL Format
     URL_TEMPLATE = "{base_url}/{version}/{uri}"
@@ -684,13 +687,12 @@ class Client:
             # Raise Exception
             response.raise_for_status()
 
-    def validate_transaction(self, transaction_id: str):
+    def get_transaction(self, transaction_id: str):
         """
-        Validate HAProxy Data Plane API Transaction and Details.
+        Get HAProxy Data Plane API Transaction Details.
 
-        Returns:
-            dict: Details of Validated HAProxy Data Plane API Transaction in JSON format.
-
+        Args:
+            transaction_id (str): The Transaction to Fetch.
         Raises:
             requests.exceptions.HTTPError: If the API request fails.
         """
@@ -698,12 +700,82 @@ class Client:
         # Build the Operation URL
         url = self.URL_TEMPLATE.format(
             base_url=self.base_url,
-            uri=self.VALIDATE_TRANSACTION_URI.format(transaction_id=transaction_id),
+            uri=self.CANCEL_TRANSACTION_URI.format(
+                transaction_id=transaction_id
+            ),
+            version=self.api_version
+        )
+
+        # Execute Request
+        response = requests.get(url, auth=self.auth)
+
+        # If Object Exists
+        if response.status_code == 200:
+
+            # Return JSON
+            return response.json()
+
+        else:
+
+            # Raise Exception
+            response.raise_for_status()
+
+    def commit_transaction(self, transaction_id: str, force_reload: bool):
+        """
+        Commit HAProxy Data Plane API Transaction and Details.
+
+        Args:
+            transaction_id (str): The Transaction to Commit.
+            force_reload (bool): Force HA Proxy Configuration Reload
+        Raises:
+            requests.exceptions.HTTPError: If the API request fails.
+        """
+
+        # Build the Operation URL
+        url = self.URL_TEMPLATE.format(
+            base_url=self.base_url,
+            uri=self.VALIDATE_TRANSACTION_URI.format(
+                transaction_id=transaction_id,
+                force_reload=force_reload
+            ),
             version=self.api_version
         )
 
         # Execute Request
         response = requests.put(url, auth=self.auth)
+
+        # If Object Exists
+        if response.status_code == 200:
+
+            # Return JSON
+            return response.json()
+
+        else:
+
+            # Raise Exception
+            response.raise_for_status()
+
+    def cancel_transaction(self, transaction_id: str):
+        """
+        Cancel HAProxy Data Plane API Transaction and Details.
+
+        Args:
+            transaction_id (str): The Transaction to Commit.
+        Raises:
+            requests.exceptions.HTTPError: If the API request fails.
+        """
+
+        # Build the Operation URL
+        url = self.URL_TEMPLATE.format(
+            base_url=self.base_url,
+            uri=self.CANCEL_TRANSACTION_URI.format(
+                transaction_id=transaction_id
+            ),
+            version=self.api_version
+        )
+
+        # Execute Request
+        response = requests.delete(url, auth=self.auth)
 
         # If Object Exists
         if response.status_code == 200:

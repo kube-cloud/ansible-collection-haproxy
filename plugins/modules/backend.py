@@ -315,27 +315,21 @@ def run_module(module: AnsibleModule, client: Client):
                 changed=False
             )
 
-            # Update Existing Instance
-            update_backend(
-                module=module,
-                client=client,
-                transaction_id=transaction_id,
-                name=backend.name,
-                backend=backend,
-                force_reload=force_reload
-            )
+        # Update Existing Instance
+        update_backend(
+            module=module,
+            client=client,
+            transaction_id=transaction_id,
+            name=backend.name,
+            backend=backend,
+            force_reload=force_reload
+        )
 
-            # Module Response : Changed
-            module.exit_json(
-                changed=True,
-                msg="Backend [{0} - {1}] Has Been Updated".format(backend.name, backend.mode)
-            )
-
-            # Initialize Module Response : Changed
-            module.exit_json(
-                changed=True,
-                msg="[{0} - {1}] Has been Updated".format(backend.name, backend.mode)
-            )
+        # Module Response : Changed
+        module.exit_json(
+            changed=True,
+            msg="Backend [{0} - {1}] Has Been Updated".format(backend.name, backend.mode)
+        )
 
     # If Requested State is 'present' and Instance don't exists
     if not existing_backend and state == 'present':
