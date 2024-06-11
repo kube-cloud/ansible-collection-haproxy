@@ -14,6 +14,7 @@ An Ansible Collection of modules and plugins that target HA Proxy Installation a
 Name | Description
 ---- | -----------
 [kube_cloud.haproxy.backend](https://github.com/kube-cloud/ansible-collection-haproxy/blob/develop/docs/haproxy.backend_module.rst)| Install and Configure HA Proxy.
+[kube_cloud.haproxy.transaction](https://github.com/kube-cloud/ansible-collection-haproxy/blob/develop/docs/haproxy.transaction_module.rst)| Validate and Cancel HA Proxy Dataplane API Transaction.
 
 ## Installing this collection
 

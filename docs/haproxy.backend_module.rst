@@ -176,6 +176,19 @@ Parameters
             </td>
             <td>HA Proxy Backend Server HTTP Healtcheck Configuration</td>
         </tr>
+        <tr>
+            <td colspan="1">state</td>
+            <td>str</td>
+            <td>No</td>
+            <td>
+                <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                    <li><b>present</b></li>
+                    <li>absent</li>
+                </ul>
+            </td>
+            <td>committed</td>
+            <td>HA Proxy Dataplane API Transaction Management (Commit or Cancel)</td>
+        </tr>
     </table>
 
 Examples
