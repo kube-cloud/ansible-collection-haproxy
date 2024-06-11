@@ -104,11 +104,11 @@ Parameters
             <td style="text-align: left;">
                 <pre style="text-align: left;">
                     <code style="text-align: left;">
-                    balance:
-                        algorithm: roundrobin
-                        hdr_use_domain_only: false
-                        uri_path_only: false
-                        uri_whole: true
+balance:
+    algorithm: roundrobin
+    hdr_use_domain_only: false
+    uri_path_only: false
+    uri_whole: true
                     </code>
                 </pre>
             </td>
