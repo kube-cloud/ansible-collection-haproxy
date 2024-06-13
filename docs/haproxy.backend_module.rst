@@ -104,11 +104,11 @@ Parameters
             <td>
                 <pre>
                     <code>
-                        balance:
-                            algorithm: roundrobin
-                            hdr_use_domain_only: false
-                            uri_path_only: false
-                            uri_whole: true
+    balance:
+        algorithm: roundrobin
+        hdr_use_domain_only: false
+        uri_path_only: false
+        uri_whole: true
                     </code>
                 </pre>
             </td>
@@ -122,10 +122,10 @@ Parameters
             <td>
                 <pre>
                     <code>
-                        httpchk_params:
-                            method: GET
-                            uri: "/login"
-                            version: "HTTP/1.1"
+    httpchk_params:
+        method: GET
+        uri: "/login"
+        version: "HTTP/1.1"
                     </code>
                 </pre>
             </td>
@@ -139,43 +139,55 @@ Parameters
             <td>
                 <pre>
                     <code>
-                        http_health_check:
-                            type: "http"
-                            method: "GET"
-                            uri: "/health"
-                            uri_log_format: "%[req.hdr(Host)]%[url]"
-                            var_expr: "some_expression"
-                            var_format: "some_format"
-                            var_name: "some_variable"
-                            var_scope: "some_scope"
-                            version: "HTTP/1.1"
-                            via_socks4: false
-                            port: 80
-                            port_string: "8080"
-                            proto: "HTTP"
-                            send_proxy: true
-                            sni: "example.com"
-                            ssl: true
-                            status_code: "200"
-                            tout_status: "L7TOUT"
-                            match: "status"
-                            headers:
-                                - name: "Host"
-                                value: "example.com"
-                                - name: "User-Agent"
-                                value: "haproxy"
-                            body: "Expected response body"
-                            body_log_format: "%[res.body]"
-                            check_comment: "Health check for service"
-                            default: false
-                            error_status: "L7RSP"
-                            addr: "192.168.1.1"
-                            ok_status: "L7OK"
-
+    http_health_check:
+        type: "http"
+        method: "GET"
+        uri: "/health"
+        uri_log_format: "%[req.hdr(Host)]%[url]"
+        var_expr: "some_expression"
+        var_format: "some_format"
+        var_name: "some_variable"
+        var_scope: "some_scope"
+        version: "HTTP/1.1"
+        via_socks4: false
+        port: 80
+        port_string: "8080"
+        proto: "HTTP"
+        send_proxy: true
+        sni: "example.com"
+        ssl: true
+        status_code: "200"
+        tout_status: "L7TOUT"
+        match: "status"
+        headers:
+            - name: "Host"
+            value: "example.com"
+            - name: "User-Agent"
+            value: "haproxy"
+        body: "Expected response body"
+        body_log_format: "%[res.body]"
+        check_comment: "Health check"
+        default: false
+        error_status: "L7RSP"
+        addr: "192.168.1.1"
+        ok_status: "L7OK"
                     </code>
                 </pre>
             </td>
             <td>HA Proxy Backend Server HTTP Healtcheck Configuration</td>
+        </tr>
+        <tr>
+            <td colspan="1">state</td>
+            <td>str</td>
+            <td>No</td>
+            <td>
+                <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                    <li><b>present</b></li>
+                    <li>absent</li>
+                </ul>
+            </td>
+            <td>committed</td>
+            <td>HA Proxy Dataplane API Transaction Management (Commit or Cancel)</td>
         </tr>
     </table>
 
@@ -223,3 +235,9 @@ Examples
         version: "HTTP/1.1"
         transaction_id: "88a7601b-6960-4263-873f-b5e3040c80a2"
         state: 'absent'
+
+
+Authors
+~~~~~~~
+
+- Jean-Jacques ETUNE NGI (jetune@kube-cloud.com)

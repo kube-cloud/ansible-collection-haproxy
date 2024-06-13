@@ -1,7 +1,7 @@
 | Type	   | Status			|
 |:---          |     :---:      |
 | Sanity Checks | [![Sanity Checks](https://github.com/kube-cloud/ansible-collection-haproxy/actions/workflows/sanity-checks.yml/badge.svg)](https://github.com/kube-cloud/ansible-collection-haproxy/actions/workflows/sanity-checks.yml)     |
-| Collection Publish | [![Collection Publish](https://github.com/kube-cloud/ansible-collection-haproxy/actions/workflows/sanity-checks.yml/badge.svg)](https://github.com/kube-cloud/ansible-collection-haproxy/actions/workflows/sanity-checks.yml)        |
+| Collection Publish | [![Collection Publish](https://github.com/kube-cloud/ansible-collection-haproxy/actions/workflows/publish-collection.yml/badge.svg)](https://github.com/kube-cloud/ansible-collection-haproxy/actions/workflows/publish-collection.yml)        |
 
 # Ansible Collection : HA Proxy (kube_cloud.haproxy)
 
@@ -10,9 +10,11 @@ An Ansible Collection of modules and plugins that target HA Proxy Installation a
 ## Included content
 
 ### Modules
+
 Name | Description
---- | ---
-[kube_cloud.haproxy.backend](https://github.com/kube-cloud/ansible-collection-haproxy/blob/main/docs/kube_cloud.haproxy.backend_module.rst)| Install and Configure HA Proxy.
+---- | -----------
+[kube_cloud.haproxy.backend](https://github.com/kube-cloud/ansible-collection-haproxy/blob/develop/docs/haproxy.backend_module.rst)| Install and Configure HA Proxy.
+[kube_cloud.haproxy.transaction](https://github.com/kube-cloud/ansible-collection-haproxy/blob/develop/docs/haproxy.transaction_module.rst)| Validate and Cancel HA Proxy Dataplane API Transaction.
 
 ## Installing this collection
 
@@ -45,3 +47,17 @@ and install it with command :
 ```bash
 ansible-galaxy collection install -r requirements.yml
 ```
+
+## Contributing to this collection
+
+- [Issues](https://github.com/kube-cloud/ansible-collection-haproxy/issues)
+- [Pull Requests](https://github.com/kube-cloud/ansible-collection-haproxy/pulls)
+
+## Roadmap
+
+
+## Licensing
+
+GNU General Public License v3.0 or later.
+
+See [COPYING](https://www.gnu.org/licenses/gpl-3.0.txt) to see the full text.
