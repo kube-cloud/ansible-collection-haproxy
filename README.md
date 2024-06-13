@@ -47,3 +47,17 @@ and install it with command :
 ```bash
 ansible-galaxy collection install -r requirements.yml
 ```
+
+## Contributing to this collection
+
+- [Issues](https://github.com/kube-cloud/ansible-collection-haproxy/issues)
+- [Pull Requests](https://github.com/kube-cloud/ansible-collection-haproxy/pulls)
+
+## Roadmap
+
+
+## Licensing
+
+GNU General Public License v3.0 or later.
+
+See [COPYING](https://www.gnu.org/licenses/gpl-3.0.txt) to see the full text.

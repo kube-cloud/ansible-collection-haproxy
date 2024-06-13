@@ -132,8 +132,11 @@ EXAMPLES = r'''
 '''
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.kube_cloud.haproxy.plugins.module_utils.haproxy import haproxy_client, ProxyProtocol, Balance
-from ansible_collections.kube_cloud.haproxy.plugins.module_utils.haproxy import HttpHealthCheck, HttpCheckParams, Backend, Client
+from ..module_utils.client_backends import BackendClient
+from ..module_utils.haproxy import haproxy_client
+from ..module_utils.models import Balance, Backend, HttpHealthCheck, HttpCheckParams
+from ..module_utils.enums import ProxyProtocol, LoadBalancingAlgorithm, HealthCheckType
+from ..module_utils.enums import MatchType, TimeoutStatus, ErrorStatus, OkStatus, HttpMethod
 
 try:
     from requests import HTTPError  # type: ignore
@@ -143,7 +146,7 @@ except ImportError:
 
 
 # Find and Return Backend
-def get_backend(module: AnsibleModule, client: Client, name: str):
+def get_backend(module: AnsibleModule, client: BackendClient, name: str):
 
     try:
 
@@ -162,7 +165,7 @@ def get_backend(module: AnsibleModule, client: Client, name: str):
 
 
 # Update Backend
-def update_backend(module: AnsibleModule, client: Client, transaction_id: str, name: str, backend: Backend, force_reload: bool):
+def update_backend(module: AnsibleModule, client: BackendClient, transaction_id: str, name: str, backend: Backend, force_reload: bool):
 
     try:
 
@@ -187,7 +190,7 @@ def update_backend(module: AnsibleModule, client: Client, transaction_id: str, n
 
 
 # Create Backend
-def create_backend(module: AnsibleModule, client: Client, transaction_id: str, backend: Backend, force_reload: bool):
+def create_backend(module: AnsibleModule, client: BackendClient, transaction_id: str, backend: Backend, force_reload: bool):
 
     try:
 
@@ -211,7 +214,7 @@ def create_backend(module: AnsibleModule, client: Client, transaction_id: str, b
 
 
 # Delete Backend
-def delete_backend(module: AnsibleModule, client: Client, transaction_id: str, name: str, force_reload: bool):
+def delete_backend(module: AnsibleModule, client: BackendClient, transaction_id: str, name: str, force_reload: bool):
 
     try:
 
@@ -275,8 +278,102 @@ def build_client(module: AnsibleModule):
         )
 
 
+# Build Requested Backend from Configuration
+def build_requested_backend(params: dict) -> Backend:
+
+    # Base Parameters Name
+    base_param_names = [
+        "name"
+    ]
+
+    # Build Requested Instance
+    backend = Backend(
+        **{k: v for k, v in params.items() if v is not None and k in base_param_names}
+    )
+
+    # Optional Initialization : mode
+    backend.mode = ProxyProtocol.create(params['mode'])
+
+    # Optional Initialization : balance
+    if params.get('balance', None) is not None:
+
+        # Extract balance
+        p_balance = params.get['balance']
+
+        # Initialize Object
+        backend.balance = Balance(
+            algorithm=LoadBalancingAlgorithm(p_balance.get('algorithm', None)),
+            header=p_balance.get('header', None),
+            ifnone=p_balance.get('ifnone', None),
+            hash_expression=p_balance.get('hash_expression', None),
+            hdr_name=p_balance.get('hdr_name', None),
+            hdr_use_domain_only=p_balance.get('hdr_use_domain_only', None),
+            random_draws=p_balance.get('random_draws', None),
+            rdp_cookie_name=p_balance.get('rdp_cookie_name', None),
+            uri_depth=p_balance.get('uri_depth', None),
+            uri_len=p_balance.get('uri_len', None),
+            uri_path_only=p_balance.get('uri_path_only', None),
+            uri_whole=p_balance.get('uri_whole', None),
+            url_param=p_balance.get('url_param', None),
+            url_param_check_post=p_balance.get('url_param_check_post', None),
+            url_param_max_wait=p_balance.get('url_param_max_wait', None)
+        )
+
+    # Optional Initialization : httpchk
+    if params.get('httpchk', None) is not None:
+
+        # Extract httpchk
+        p_httpchk = params.get['httpchk']
+
+        # Initialize Object
+        backend.httpchk = HttpHealthCheck(
+            type=HealthCheckType(p_httpchk.get('type', None)),
+            method=p_httpchk.get('method', None),
+            uri=p_httpchk.get('uri', None),
+            uri_log_format=p_httpchk.get('uri_log_format', None),
+            var_expr=p_httpchk.get('var_expr', None),
+            var_format=p_httpchk.get('var_format', None),
+            var_name=p_httpchk.get('var_name', None),
+            var_scope=p_httpchk.get('var_scope', None),
+            version=p_httpchk.get('version', None),
+            via_socks4=p_httpchk.get('via_socks4', None),
+            port=p_httpchk.get('port', None),
+            port_string=p_httpchk.get('port_string', None),
+            proto=p_httpchk.get('proto', None),
+            send_proxy=p_httpchk.get('send_proxy', None),
+            sni=p_httpchk.get('sni', None),
+            ssl=p_httpchk.get('ssl', None),
+            status_code=p_httpchk.get('status_code', None),
+            tout_status=TimeoutStatus.create(p_httpchk.get('tout_status', None)),
+            match=MatchType.create(p_httpchk.get('match', None)),
+            headers=p_httpchk.get('headers', None),
+            body=p_httpchk.get('body', None),
+            body_log_format=p_httpchk.get('body_log_format', None),
+            check_comment=p_httpchk.get('check_comment', None),
+            default=p_httpchk.get('default', None),
+            error_status=ErrorStatus.create(p_httpchk.get('error_status', None)),
+            ok_status=OkStatus.create(p_httpchk.get('ok_status', None))
+        )
+
+    # Optional Initialization : httpchk_params
+    if params.get('httpchk_params', None) is not None:
+
+        # Extract httpchk_params
+        p_httpchk_params = params.get['httpchk_params']
+
+        # Initialize Object
+        backend.httpchk_params = HttpCheckParams(
+            method=HttpMethod(p_httpchk_params.get('method', None)),
+            uri=p_httpchk_params.get('uri', None),
+            version=p_httpchk_params.get('version', None)
+        )
+
+    # Return Backend
+    return backend
+
+
 # Porcess Module Execution
-def run_module(module: AnsibleModule, client: Client):
+def run_module(module: AnsibleModule, client: BackendClient):
 
     # Extract Trasaction ID
     transaction_id = module.params['transaction_id']
@@ -288,13 +385,7 @@ def run_module(module: AnsibleModule, client: Client):
     force_reload = module.params['force_reload']
 
     # Build Requested Instance
-    backend = Backend(
-        name=module.params['name'],
-        mode=ProxyProtocol(module.params['mode']),
-        balance=Balance(module.params['balance']),
-        httpchk=HttpHealthCheck(module.params['httpchk']),
-        httpchk_params=HttpCheckParams(module.params['httpchk_params'])
-    )
+    backend = build_requested_backend(module.params)
 
     # Find Existing Instance
     existing_backend = get_backend(
@@ -384,7 +475,7 @@ def main():
     module = build_ansible_module()
 
     # Build Client from Module
-    client = build_client(module)
+    client = build_client(module).backend
 
     # Execute Module
     run_module(module, client)

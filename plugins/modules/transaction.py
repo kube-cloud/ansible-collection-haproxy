@@ -84,7 +84,8 @@ EXAMPLES = r'''
 '''
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.kube_cloud.haproxy.plugins.module_utils.haproxy import haproxy_client, Client
+from ..module_utils.client_transactions import TransactionClient
+from ..module_utils.haproxy import haproxy_client
 
 try:
     from requests import HTTPError  # type: ignore
@@ -94,7 +95,7 @@ except ImportError:
 
 
 # Commit Transaction
-def commit_transaction(module: AnsibleModule, client: Client, transaction_id: str, force_reload: bool):
+def commit_transaction(module: AnsibleModule, client: TransactionClient, transaction_id: str, force_reload: bool):
 
     try:
 
@@ -117,7 +118,7 @@ def commit_transaction(module: AnsibleModule, client: Client, transaction_id: st
 
 
 # Cancel Transaction
-def cancel_transaction(module: AnsibleModule, client: Client, transaction_id: str):
+def cancel_transaction(module: AnsibleModule, client: TransactionClient, transaction_id: str):
 
     try:
 
@@ -138,7 +139,7 @@ def cancel_transaction(module: AnsibleModule, client: Client, transaction_id: st
 
 
 # Get Transaction
-def get_transaction(module: AnsibleModule, client: Client, transaction_id: str):
+def get_transaction(module: AnsibleModule, client: TransactionClient, transaction_id: str):
 
     try:
 
@@ -196,7 +197,7 @@ def build_client(module: AnsibleModule):
 
 
 # Porcess Module Execution
-def run_module(module: AnsibleModule, client: Client):
+def run_module(module: AnsibleModule, client: TransactionClient):
 
     # Extract Trasaction ID
     transaction_id = module.params['transaction_id']
@@ -272,7 +273,7 @@ def main():
     module = build_ansible_module()
 
     # Build Client from Module
-    client = build_client(module)
+    client = build_client(module).transaction
 
     # Execute Module
     run_module(module, client)

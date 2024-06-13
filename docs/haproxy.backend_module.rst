@@ -235,3 +235,9 @@ Examples
         version: "HTTP/1.1"
         transaction_id: "88a7601b-6960-4263-873f-b5e3040c80a2"
         state: 'absent'
+
+
+Authors
+~~~~~~~
+
+- Jean-Jacques ETUNE NGI (jetune@kube-cloud.com)

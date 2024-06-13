@@ -51,7 +51,7 @@ _raw:
 
 
 from ansible.plugins.lookup import LookupBase
-from ansible_collections.kube_cloud.haproxy.plugins.module_utils.haproxy import haproxy_client
+from ..module_utils.haproxy import haproxy_client
 
 try:
     from requests import HTTPError  # type: ignore
