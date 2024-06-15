@@ -2,7 +2,7 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 from .commons import dataclass_to_payload
-from .models import Backend
+from .models import BackendSwitchingRule
 from .client_configurations import ConfigurationClient
 
 try:
@@ -12,9 +12,9 @@ except ImportError:
     IMPORTS_OK = False
 
 
-class BackendClient:
+class BackendSwitchingRuleClient:
     """
-    Client for interacting with the HAProxy Data Plane API for Backend.
+    Client for interacting with the HAProxy Data Plane API for BackendSwitchingRule.
 
     Attributes:
         base_url (str): The base URL of the HAProxy Data Plane API.
@@ -24,17 +24,20 @@ class BackendClient:
     # Définir la constante pour application/json
     CONTENT_TYPE_JSON = "application/json"
 
-    # Backends URI
-    BACKENDS_URI = "services/haproxy/configuration/backends"
+    # BackendSwitchingRules URI
+    BACKEND_SWITCHING_RULES_URI = "services/haproxy/configuration/backend_switching_rules"
 
-    # Backend URI
-    BACKEND_URI = "services/haproxy/configuration/backends/{name}"
+    # Get BackendSwitchingRule URI
+    BACKEND_SWITCHING_RULE_URI = "services/haproxy/configuration/backend_switching_rules/{index}"
 
-    # Backend URI Template with Transaction ID
-    BACKEND_URI_TEMPLATE_TX = "{backend_uri}?transaction_id={transaction_id}"
+    # GET BackendSwitchingRule URI Template
+    GET_BACKEND_SWITCHING_RULE_URI_TEMPLATE = "{besr_uri}?frontend={frontend_name}"
 
-    # Backend URI Template with Config Version and Force Reload
-    BACKEND_URI_TEMPLATE_VERSION = "{backend_uri}?version={config_version}&force_reload={force_reload}"
+    # BackendSwitchingRule URI Template with Transaction ID
+    BACKEND_SWITCHING_RULE_URI_TEMPLATE_TX = "{besr_uri}?transaction_id={transaction_id}&frontend={frontend_name}"
+
+    # BackendSwitchingRule URI Template with Config Version and Force Reload
+    BACKEND_SWITCHING_RULE_URI_TEMPLATE_VERSION = "{besr_uri}?version={config_version}&force_reload={force_reload}&frontend={frontend_name}"
 
     # URL Format
     URL_TEMPLATE = "{base_url}/{version}/{uri}"
@@ -55,13 +58,13 @@ class BackendClient:
         if not base_url:
 
             # Raise Value Exception
-            raise ValueError("[BackendClient] - Initialization failed : 'base_url' is required")
+            raise ValueError("[BackendSwitchingRuleClient] - Initialization failed : 'base_url' is required")
 
         # If auth is not Provided
         if not auth:
 
             # Raise Value Exception
-            raise ValueError("[BackendClient] - Initialization failed : 'auth' is required")
+            raise ValueError("[BackendSwitchingRuleClient] - Initialization failed : 'auth' is required")
 
         # Initialize Base URL
         self.base_url = base_url.rstrip('/')
@@ -79,12 +82,12 @@ class BackendClient:
             auth=auth
         )
 
-    def get_backends(self):
+    def get_backend_switching_rules(self):
         """
-        Retrieves the list of Backends from the HAProxy Data Plane API.
+        Retrieves the list of BackendSwitchingRules from the HAProxy Data Plane API.
 
         Returns:
-            list: A list of Backends in JSON format.
+            list: A list of BackendSwitchingRules in JSON format.
 
         Raises:
             requests.exceptions.HTTPError: If the API request fails.
@@ -93,7 +96,7 @@ class BackendClient:
         # Build the Operation URL
         url = self.URL_TEMPLATE.format(
             base_url=self.base_url,
-            uri=self.BACKENDS_URI,
+            uri=self.BACKEND_SWITCHING_RULES_URI,
             version=self.api_version
         )
 
@@ -111,15 +114,16 @@ class BackendClient:
             # Raise Exception
             response.raise_for_status()
 
-    def get_backend(self, name: str):
+    def get_backend_switching_rule(self, index: int, frontend_name: str):
         """
-        Retrieves the details of given Backend (name) from the HAProxy Data Plane API.
+        Retrieves the details of given BackendSwitchingRule (name) from the HAProxy Data Plane API.
 
         Args:
-            name (str): The name of the Backend to retrieve details for.
+            index (int): The Index of the BackendSwitchingRule to retrieve details for.
+            frontend_name (str): The name of the Frontend Parent
 
         Returns:
-            dict: Details of Backend in JSON format.
+            dict: Details of BackendSwitchingRule in JSON format.
 
         Raises:
             requests.exceptions.HTTPError: If the API request fails.
@@ -128,7 +132,10 @@ class BackendClient:
         # Build the Operation URL
         url = self.URL_TEMPLATE.format(
             base_url=self.base_url,
-            uri=self.BACKEND_URI.format(name=name),
+            uri=self.GET_BACKEND_SWITCHING_RULE_URI_TEMPLATE.format(
+                besr_uri=self.BACKEND_SWITCHING_RULE_URI.format(index=index),
+                frontend_name=frontend_name
+            ),
             version=self.api_version
         )
 
@@ -146,17 +153,18 @@ class BackendClient:
             # Raise Exception
             response.raise_for_status()
 
-    def create_backend(self, backend: Backend, transaction_id: str, force_reload: bool = True):
+    def create_backend_switching_rule(self, besr: BackendSwitchingRule, transaction_id: str, frontend_name: str, force_reload: bool = True):
         """
-        Create a Backend on HAProxy API.
+        Create a BackendSwitchingRule on HAProxy API.
 
         Args:
-            backend (Backend): The backend to create.
+            besr (BackendSwitchingRule): The Bacnebd Switching Rule to create.
             transaction_id (str): Started Transaction ID
+            frontend_name (str): The name of the Frontend Parent
             force_reload (bool): Force Reload HA Proxy Configuration (used if no Transaction ID Provided)
 
         Returns:
-            dict: Details of Created Backend in JSON format.
+            dict: Details of Created BackendSwitchingRule in JSON format.
 
         Raises:
             requests.exceptions.HTTPError: If the API request fails.
@@ -166,9 +174,10 @@ class BackendClient:
         if transaction_id and transaction_id.strip():
 
             # Initialize URI
-            create_backend_uri = self.BACKEND_URI_TEMPLATE_TX.format(
-                backend_uri=self.BACKENDS_URI,
-                transaction_id=transaction_id
+            create_besr_uri = self.BACKEND_SWITCHING_RULE_URI_TEMPLATE_TX.format(
+                besr_uri=self.BACKEND_SWITCHING_RULES_URI,
+                transaction_id=transaction_id,
+                frontend_name=frontend_name
             )
 
         else:
@@ -177,23 +186,24 @@ class BackendClient:
             config_version = self.configuration.get_configuration_version()
 
             # Initialize URI
-            create_backend_uri = self.BACKEND_URI_TEMPLATE_VERSION.format(
-                backend_uri=self.BACKENDS_URI,
+            create_besr_uri = self.BACKEND_SWITCHING_RULE_URI_TEMPLATE_VERSION.format(
+                besr_uri=self.BACKEND_SWITCHING_RULES_URI,
                 config_version=config_version,
-                force_reload=force_reload
+                force_reload=force_reload,
+                frontend_name=frontend_name
             )
 
         # Build the Operation URL
         url = self.URL_TEMPLATE.format(
             base_url=self.base_url,
-            uri=create_backend_uri,
+            uri=create_besr_uri,
             version=self.api_version
         )
 
         # Execute Request
         response = requests.post(
             url=url,
-            json=dataclass_to_payload(backend),
+            json=dataclass_to_payload(besr),
             headers={
                 "Content-Type": self.CONTENT_TYPE_JSON
             },
@@ -211,18 +221,19 @@ class BackendClient:
             # Raise Exception
             response.raise_for_status()
 
-    def update_backend(self, name: str, backend: Backend, transaction_id: str, force_reload: bool = True):
+    def update_backend_switching_rule(self, index: int, besr: BackendSwitchingRule, transaction_id: str, frontend_name: str, force_reload: bool = True):
         """
-        Update a Backend on HAProxy API.
+        Update a BackendSwitchingRule on HAProxy API.
 
         Args:
-            name (str): The Backend Name
-            backend (Backend): The backend to create.
+            index (int): The BackendSwitchingRule Index
+            besr (BackendSwitchingRule): The Bacnebd Switching Rule to create.
             transaction_id (str): Started Transaction ID
+            frontend_name (str): The name of the Frontend Parent
             force_reload (bool): Force Reload HA Proxy Configuration (used if no Transaction ID Provided)
 
         Returns:
-            dict: Details of Created Backend in JSON format.
+            dict: Details of Created BackendSwitchingRule in JSON format.
 
         Raises:
             requests.exceptions.HTTPError: If the API request fails.
@@ -232,9 +243,10 @@ class BackendClient:
         if transaction_id and transaction_id.strip():
 
             # Initialize URI
-            create_backend_uri = self.BACKEND_URI_TEMPLATE_TX.format(
-                backend_uri=self.BACKEND_URI.format(name=name),
-                transaction_id=transaction_id
+            create_besr_uri = self.BACKEND_SWITCHING_RULE_URI_TEMPLATE_TX.format(
+                besr_uri=self.BACKEND_SWITCHING_RULE_URI.format(index=index),
+                transaction_id=transaction_id,
+                frontend_name=frontend_name
             )
 
         else:
@@ -243,23 +255,24 @@ class BackendClient:
             config_version = self.configuration.get_configuration_version()
 
             # Initialize URI
-            create_backend_uri = self.BACKEND_URI_TEMPLATE_VERSION.format(
-                backend_uri=self.BACKEND_URI.format(name=name),
+            create_besr_uri = self.BACKEND_SWITCHING_RULE_URI_TEMPLATE_VERSION.format(
+                besr_uri=self.BACKEND_SWITCHING_RULE_URI.format(index=index),
                 config_version=config_version,
-                force_reload=force_reload
+                force_reload=force_reload,
+                frontend_name=frontend_name
             )
 
         # Build the Operation URL
         url = self.URL_TEMPLATE.format(
             base_url=self.base_url,
-            uri=create_backend_uri,
+            uri=create_besr_uri,
             version=self.api_version
         )
 
         # Execute Request
         response = requests.put(
             url=url,
-            json=dataclass_to_payload(backend),
+            json=dataclass_to_payload(besr),
             headers={
                 "Content-Type": self.CONTENT_TYPE_JSON
             },
@@ -277,13 +290,15 @@ class BackendClient:
             # Raise Exception
             response.raise_for_status()
 
-    def delete_backend(self, name: str, transaction_id: str, force_reload: bool = True):
+    def delete_backend_switching_rule(self, index: int, transaction_id: str, frontend_name: str, force_reload: bool = True):
         """
-        Delete a Backend on HAProxy API.
+        Delete a BackendSwitchingRule on HAProxy API.
 
         Args:
-            name (str): The Backend Name
+            index (str): The BackendSwitchingRule Index
             transaction_id (str): Started Transaction ID
+            transaction_id (str): Started Transaction ID
+            frontend_name (str): The name of the Frontend Parent
             force_reload (bool): Force Reload HA Proxy Configuration (used if no Transaction ID Provided)
 
         Raises:
@@ -294,9 +309,10 @@ class BackendClient:
         if transaction_id and transaction_id.strip():
 
             # Initialize URI
-            create_backend_uri = self.BACKEND_URI_TEMPLATE_TX.format(
-                backend_uri=self.BACKEND_URI.format(name=name),
-                transaction_id=transaction_id
+            create_besr_uri = self.BACKEND_SWITCHING_RULE_URI_TEMPLATE_TX.format(
+                besr_uri=self.BACKEND_SWITCHING_RULE_URI.format(index=index),
+                transaction_id=transaction_id,
+                frontend_name=frontend_name
             )
 
         else:
@@ -305,16 +321,17 @@ class BackendClient:
             config_version = self.configuration.get_configuration_version()
 
             # Initialize URI
-            create_backend_uri = self.BACKEND_URI_TEMPLATE_VERSION.format(
-                backend_uri=self.BACKEND_URI.format(name=name),
+            create_besr_uri = self.BACKEND_SWITCHING_RULE_URI_TEMPLATE_VERSION.format(
+                besr_uri=self.BACKEND_SWITCHING_RULE_URI.format(index=index),
                 config_version=config_version,
-                force_reload=force_reload
+                force_reload=force_reload,
+                frontend_name=frontend_name
             )
 
         # Build the Operation URL
         url = self.URL_TEMPLATE.format(
             base_url=self.base_url,
-            uri=create_backend_uri,
+            uri=create_besr_uri,
             version=self.api_version
         )
 

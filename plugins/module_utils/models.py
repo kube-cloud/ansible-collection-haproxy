@@ -7,6 +7,7 @@ from .enums import EnableDisableEnum, LoadBalancingAlgorithm, CookieType
 from .enums import WebSocketProtocol, HealthCheckType, TimeoutStatus
 from .enums import ErrorStatus, OkStatus, HttpMethod, ProxyProtocol, FrontendLevel
 from .enums import CompressionAlgorithm, SSLVersion, Requirement, MatchType
+from .enums import AdvancedHealthCheckType, MySqlVersionCheckType, ConditionType
 
 
 # Load Balancing Configuration
@@ -288,23 +289,7 @@ class ErrorFile:
             raise ValueError("[ErrorFile] - The 'file' field is required.")
 
 
-# Backend Configuration
-@dataclass
-class Backend:
-    name: str
-    mode: Optional[ProxyProtocol] = None
-    balance: Optional[Balance] = None
-    httpchk: Optional[HttpHealthCheck] = None
-    httpchk_params: Optional[HttpCheckParams] = None
-
-    def __post_init__(self):
-
-        # Ajoutez ici des validations si nécessaire
-        if not self.name:
-            raise ValueError("[Backend] - The 'name' field is required.")
-
-
-# Frontend Compression
+# /BackendFrontend Compression
 @dataclass
 class Compression:
     algorithms: Optional[List[CompressionAlgorithm]] = field(default_factory=list)
@@ -312,7 +297,7 @@ class Compression:
     types: Optional[List[str]] = field(default_factory=list)
 
 
-# Frontend Forwarded For
+# Backend/Frontend Forwarded For
 @dataclass
 class ForwardFor:
     enabled: EnableDisableEnum
@@ -324,6 +309,115 @@ class ForwardFor:
         # Ajoutez ici des validations si nécessaire
         if not self.enabled:
             raise ValueError("[ForwardFor] - The 'enabled' field is required.")
+
+
+# Backend Check Params for MySQL
+@dataclass
+class MySqlCheckParams:
+    client_version: MySqlVersionCheckType
+    username: Optional[str] = None
+
+
+# Backend Check Params for Posgres
+@dataclass
+class PostgresSqlCheckParams:
+    username: Optional[str] = None
+
+
+# Backend Check Params for SMTP
+@dataclass
+class SmtpCheckParams:
+    domain: Optional[str] = None
+    hello: Optional[str] = None
+
+
+# Backend Redispatch
+@dataclass
+class Redispatch:
+    enabled: EnableDisableEnum
+    interval: Optional[int] = None
+
+    def __post_init__(self):
+
+        # Ajoutez ici des validations si nécessaire
+        if not self.enabled:
+            raise ValueError("[Redispatch] - The 'enabled' field is required.")
+
+
+# Backend Ignore Persist
+@dataclass
+class IgnorePersist:
+    cond: ConditionType
+    cond_test: str
+
+    def __post_init__(self):
+
+        # Ajoutez ici des validations si nécessaire
+        if not self.cond:
+            raise ValueError("[IgnorePersist] - The 'cond' field is required.")
+
+        # Ajoutez ici des validations si nécessaire
+        if not self.cond_test:
+            raise ValueError("[IgnorePersist] - The 'cond_test' field is required.")
+
+
+# Backend Configuration
+@dataclass
+class Backend:
+    name: str
+    mode: Optional[ProxyProtocol] = None
+    balance: Optional[Balance] = None
+    httpchk: Optional[HttpHealthCheck] = None
+    httpchk_params: Optional[HttpCheckParams] = None
+    ignore_persist: Optional[IgnorePersist] = None
+    abortonclose: Optional[EnableDisableEnum] = None
+    accept_invalid_http_response: Optional[EnableDisableEnum] = None
+    adv_check: Optional[AdvancedHealthCheckType] = None
+    allbackups: Optional[EnableDisableEnum] = None
+    bind_process: Optional[str] = None
+    check_timeout: Optional[int] = None
+    checkcache: Optional[EnableDisableEnum] = None
+    compression: Optional[Compression] = None
+    connect_timeout: Optional[int] = None
+    description: Optional[str] = None
+    disabled: Optional[bool] = None
+    enabled: Optional[bool] = None
+    error_files: Optional[List[ErrorFile]] = field(default_factory=list)
+    errorloc302: Optional[ErrorLoc] = None
+    errorloc303: Optional[ErrorLoc] = None
+    external_check: Optional[EnableDisableEnum] = None
+    external_check_command: Optional[str] = None
+    external_check_path: Optional[str] = None
+    fullconn: Optional[int] = None
+    nolinger: Optional[EnableDisableEnum] = None
+    forwardfor: Optional[ForwardFor] = None
+    mysql_check_params: Optional[MySqlVersionCheckType] = None
+    pgsql_check_params: Optional[PostgresSqlCheckParams] = None
+    prefer_last_server: Optional[EnableDisableEnum] = None
+    queue_timeout: Optional[int] = None
+    redispatch: Optional[Redispatch] = None
+    retries: Optional[int] = None
+    retry_on: Optional[str] = None
+    server_fin_timeout: Optional[int] = None
+    server_state_file_name: Optional[str] = None
+    server_timeout: Optional[int] = None
+    smtpchk_params: Optional[SmtpCheckParams] = None
+    splice_auto: Optional[EnableDisableEnum] = None
+    splice_request: Optional[EnableDisableEnum] = None
+    splice_response: Optional[EnableDisableEnum] = None
+    spop_check: Optional[EnableDisableEnum] = None
+    srvtcpka: Optional[EnableDisableEnum] = None
+    srvtcpka_cnt: Optional[int] = None
+    srvtcpka_idle: Optional[int] = None
+    srvtcpka_intvl: Optional[int] = None
+    independent_streams: Optional[EnableDisableEnum] = None
+    log_health_checks: Optional[EnableDisableEnum] = None
+
+    def __post_init__(self):
+
+        # Ajoutez ici des validations si nécessaire
+        if not self.name:
+            raise ValueError("[Backend] - The 'name' field is required.")
 
 
 # Frontend Configuration
@@ -419,3 +513,21 @@ class Bind:
         # Ajoutez ici des validations si nécessaire
         if not self.name:
             raise ValueError("[Bind] - The 'name' field is required.")
+
+
+# ACL Configuration
+@dataclass
+class Acl:
+    acl_name: str
+    criterion: str
+    index: int
+    value: str
+
+
+# Backend Switching Rule Configuration
+@dataclass
+class BackendSwitchingRule:
+    cond: ConditionType
+    cond_test: str
+    index: int
+    name: str

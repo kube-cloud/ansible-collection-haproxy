@@ -5,6 +5,8 @@ from .client_backends import BackendClient
 from .client_frontends import FrontendClient
 from .client_transactions import TransactionClient
 from .client_configurations import ConfigurationClient
+from .client_acls import AclClient
+from .client_backend_switching_rules import BackendSwitchingRuleClient
 
 try:
     from requests.auth import HTTPBasicAuth     # type: ignore
@@ -91,6 +93,20 @@ class Client:
 
         # Initialize Configuration Client
         self.configuration = ConfigurationClient(
+            base_url=base_url,
+            api_version=api_version,
+            auth=self.auth
+        )
+
+        # Initialize ACL Client
+        self.acl = AclClient(
+            base_url=base_url,
+            api_version=api_version,
+            auth=self.auth
+        )
+
+        # Initialize Backend Switching Rule Client
+        self.besr = BackendSwitchingRuleClient(
             base_url=base_url,
             api_version=api_version,
             auth=self.auth

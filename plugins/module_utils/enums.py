@@ -216,6 +216,44 @@ class HealthCheckType(BaseEnum):
     UNSET_VAR = "unset-var"
 
 
+# Define an enumeration for Advanced Healtcheck Type Protocol
+class AdvancedHealthCheckType(BaseEnum):
+    """
+    Represents various health check types for HAProxy.
+
+    Attributes:
+        SSL_HELLO_CHK (str): SSL hello health check.
+        SMTPCHK (str): SMTP health check.
+        LDAP_CHECK (str): LDAP health check.
+        MYSQL_CHECK (str): MySQL health check.
+        PGSQL_CHECK (str): PostgreSQL health check.
+        TCP_CHECK (str): TCP health check.
+        REDIS_CHECK (str): Redis health check.
+        HTTPCHK (str): HTTP health check.
+    """
+    SSL_HELLO_CHK = "ssl-hello-chk"
+    SMTPCHK = "smtpchk"
+    LDAP_CHECK = "ldap-check"
+    MYSQL_CHECK = "mysql-check"
+    PGSQL_CHECK = "pgsql-check"
+    TCP_CHECK = "tcp-check"
+    REDIS_CHECK = "redis-check"
+    HTTPCHK = "httpchk"
+
+
+# MySQL Check Type Params
+class MySqlVersionCheckType(BaseEnum):
+    """
+    Represents version check types.
+
+    Attributes:
+        PRE_41 (str): Version check for pre-41.
+        POST_41 (str): Version check for post-41.
+    """
+    PRE_41 = "pre-41"
+    POST_41 = "post-41"
+
+
 # Define an enumeration for HttpMethod
 class HttpMethod(BaseEnum):
     """
@@ -324,3 +362,16 @@ class CompressionAlgorithm(BaseEnum):
     GZIP = "gzip"
     DEFLATE = "deflate"
     RAW_DEFLATE = "raw-deflate"
+
+
+# Condition Type
+class ConditionType(BaseEnum):
+    """
+    Represents Condition types.
+
+    Attributes:
+        IF (str): IF Condition.
+        UNLESS (str): UNLESS Condition.
+    """
+    IF = "if"
+    UNLESS = "unless"
