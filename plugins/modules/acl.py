@@ -452,7 +452,7 @@ def main():
     module = build_ansible_module()
 
     # Build Client from Module
-    client = build_client(module).backend
+    client = build_client(module).acl
 
     # Execute Module
     run_module(module, client)
