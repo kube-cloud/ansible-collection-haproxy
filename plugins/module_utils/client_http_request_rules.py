@@ -2,7 +2,7 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 from .commons import filter_none, is_2xx
-from .models import Acl
+from .models import HttpRequestRule
 from .client_configurations import ConfigurationClient
 
 try:
@@ -12,9 +12,9 @@ except ImportError:
     IMPORTS_OK = False
 
 
-class AclClient:
+class HttpRequestRuleClient:
     """
-    Client for interacting with the HAProxy Data Plane API for Acl.
+    Client for interacting with the HAProxy Data Plane API for HttpRequestRule.
 
     Attributes:
         base_url (str): The base URL of the HAProxy Data Plane API.
@@ -24,20 +24,20 @@ class AclClient:
     # Définir la constante pour application/json
     CONTENT_TYPE_JSON = "application/json"
 
-    # Acls URI
-    ACLS_URI = "services/haproxy/configuration/acls"
+    # HttpRequestRules URI
+    HTTP_RQ_RULES_URI = "services/haproxy/configuration/http_request_rules"
 
-    # Get Acl URI
-    ACL_URI = "services/haproxy/configuration/acls/{index}"
+    # Get HttpRequestRule URI
+    RQ_RULE_URI = "services/haproxy/configuration/http_request_rules/{index}"
 
-    # GET Acl URI Template
-    GET_ACL_URI_TEMPLATE = "{acl_uri}?parent_type={parent_type}&parent_name={parent_name}"
+    # GET HttpRequestRule URI Template
+    GET_RQ_RULE_URI_TEMPLATE = "{http_rq_rule_uri}?parent_type={parent_type}&parent_name={parent_name}"
 
-    # Acl URI Template with Transaction ID
-    ACL_URI_TEMPLATE_TX = "{acl_uri}?transaction_id={transaction_id}&parent_type={parent_type}&parent_name={parent_name}"
+    # HttpRequestRule URI Template with Transaction ID
+    RQ_RULE_URI_TEMPLATE_TX = "{http_rq_rule_uri}?transaction_id={transaction_id}&parent_type={parent_type}&parent_name={parent_name}"
 
-    # Acl URI Template with Config Version and Force Reload
-    ACL_URI_TEMPLATE_VERSION = "{acl_uri}?version={config_version}&force_reload={force_reload}&parent_type={parent_type}&parent_name={parent_name}"
+    # HttpRequestRule URI Template with Config Version and Force Reload
+    RQ_RULE_URI_TEMPLATE_VERSION = "{http_rq_rule_uri}?version={config_version}&force_reload={force_reload}&parent_type={parent_type}&parent_name={parent_name}"
 
     # URL Format
     URL_TEMPLATE = "{base_url}/{version}/{uri}"
@@ -58,13 +58,13 @@ class AclClient:
         if not base_url:
 
             # Raise Value Exception
-            raise ValueError("[AclClient] - Initialization failed : 'base_url' is required")
+            raise ValueError("[HttpRequestRuleClient] - Initialization failed : 'base_url' is required")
 
         # If auth is not Provided
         if not auth:
 
             # Raise Value Exception
-            raise ValueError("[AclClient] - Initialization failed : 'auth' is required")
+            raise ValueError("[HttpRequestRuleClient] - Initialization failed : 'auth' is required")
 
         # Initialize Base URL
         self.base_url = base_url.rstrip('/')
@@ -82,12 +82,12 @@ class AclClient:
             auth=auth
         )
 
-    def get_acls(self):
+    def get_rules(self):
         """
-        Retrieves the list of Acls from the HAProxy Data Plane API.
+        Retrieves the list of HttpRequestRules from the HAProxy Data Plane API.
 
         Returns:
-            list: A list of Acls in JSON format.
+            list: A list of HttpRequestRules in JSON format.
 
         Raises:
             requests.exceptions.HTTPError: If the API request fails.
@@ -96,7 +96,7 @@ class AclClient:
         # Build the Operation URL
         url = self.URL_TEMPLATE.format(
             base_url=self.base_url,
-            uri=self.ACLS_URI,
+            uri=self.HTTP_RQ_RULES_URI,
             version=self.api_version
         )
 
@@ -114,17 +114,17 @@ class AclClient:
             # Raise Exception
             response.raise_for_status()
 
-    def get_acl(self, index: int, parent_name: str, parent_type: str = 'backend'):
+    def get_rule(self, index: int, parent_name: str, parent_type: str = 'backend'):
         """
-        Retrieves the details of given Acl (name) from the HAProxy Data Plane API.
+        Retrieves the details of given HttpRequestRule (name) from the HAProxy Data Plane API.
 
         Args:
-            index (int): The Index of the Acl to retrieve details for.
-            parent_name (str): The name of the Acl Parent
-            parent_type (str): The Type of the Acl Parent
+            index (int): The Index of the HttpRequestRule to retrieve details for.
+            parent_name (str): The name of the HttpRequestRule Parent
+            parent_type (str): The Type of the HttpRequestRule Parent
 
         Returns:
-            dict: Details of Acl in JSON format.
+            dict: Details of HttpRequestRule in JSON format.
 
         Raises:
             requests.exceptions.HTTPError: If the API request fails.
@@ -133,8 +133,8 @@ class AclClient:
         # Build the Operation URL
         url = self.URL_TEMPLATE.format(
             base_url=self.base_url,
-            uri=self.GET_ACL_URI_TEMPLATE.format(
-                acl_uri=self.ACL_URI.format(index=index),
+            uri=self.GET_RQ_RULE_URI_TEMPLATE.format(
+                http_rq_rule_uri=self.RQ_RULE_URI.format(index=index),
                 parent_type=parent_type,
                 parent_name=parent_name
             ),
@@ -155,19 +155,19 @@ class AclClient:
             # Raise Exception
             response.raise_for_status()
 
-    def create_acl(self, acl: Acl, transaction_id: str, parent_name: str, parent_type: str = 'backend', force_reload: bool = True):
+    def create_rule(self, rule: HttpRequestRule, transaction_id: str, parent_name: str, parent_type: str = 'backend', force_reload: bool = True):
         """
-        Create a Acl on HAProxy API.
+        Create a HttpRequestRule on HAProxy API.
 
         Args:
-            acl (Acl): The acl to create.
+            rule (HttpRequestRule): The Rule to create.
             transaction_id (str): Started Transaction ID
-            parent_name (str): The name of the Acl Parent
+            parent_name (str): The name of the HttpRequestRule Parent
             parent_type (str): The Type of the Parent
             force_reload (bool): Force Reload HA Proxy Configuration (used if no Transaction ID Provided)
 
         Returns:
-            dict: Details of Created Acl in JSON format.
+            dict: Details of Created HttpRequestRule in JSON format.
 
         Raises:
             requests.exceptions.HTTPError: If the API request fails.
@@ -177,8 +177,8 @@ class AclClient:
         if transaction_id and transaction_id.strip():
 
             # Initialize URI
-            create_acl_uri = self.ACL_URI_TEMPLATE_TX.format(
-                acl_uri=self.ACLS_URI,
+            create_http_rq_rule_uri = self.RQ_RULE_URI_TEMPLATE_TX.format(
+                http_rq_rule_uri=self.HTTP_RQ_RULES_URI,
                 transaction_id=transaction_id,
                 parent_name=parent_name,
                 parent_type=parent_type
@@ -190,8 +190,8 @@ class AclClient:
             config_version = self.configuration.get_configuration_version()
 
             # Initialize URI
-            create_acl_uri = self.ACL_URI_TEMPLATE_VERSION.format(
-                acl_uri=self.ACLS_URI,
+            create_http_rq_rule_uri = self.RQ_RULE_URI_TEMPLATE_VERSION.format(
+                http_rq_rule_uri=self.HTTP_RQ_RULES_URI,
                 config_version=config_version,
                 force_reload=force_reload,
                 parent_name=parent_name,
@@ -201,14 +201,14 @@ class AclClient:
         # Build the Operation URL
         url = self.URL_TEMPLATE.format(
             base_url=self.base_url,
-            uri=create_acl_uri,
+            uri=create_http_rq_rule_uri,
             version=self.api_version
         )
 
         # Execute Request
         response = requests.post(
             url=url,
-            json=filter_none(acl),
+            json=filter_none(rule),
             headers={
                 "Content-Type": self.CONTENT_TYPE_JSON
             },
@@ -226,20 +226,20 @@ class AclClient:
             # Raise Exception
             response.raise_for_status()
 
-    def update_acl(self, index: int, acl: Acl, transaction_id: str, parent_name: str, parent_type: str = 'backend', force_reload: bool = True):
+    def update_rule(self, index: int, rule: HttpRequestRule, transaction_id: str, parent_name: str, parent_type: str = 'backend', force_reload: bool = True):
         """
-        Update a Acl on HAProxy API.
+        Update a HttpRequestRule on HAProxy API.
 
         Args:
-            index (int): The Acl Index
-            acl (Acl): The acl to create.
+            index (int): The HttpRequestRule Index
+            rule (HttpRequestRule): The rule to update.
             transaction_id (str): Started Transaction ID
-            parent_name (str): The name of the Acl Parent
+            parent_name (str): The name of the HttpRequestRule Parent
             parent_type (str): The Type of the Parent
             force_reload (bool): Force Reload HA Proxy Configuration (used if no Transaction ID Provided)
 
         Returns:
-            dict: Details of Created Acl in JSON format.
+            dict: Details of Created HttpRequestRule in JSON format.
 
         Raises:
             requests.exceptions.HTTPError: If the API request fails.
@@ -249,8 +249,8 @@ class AclClient:
         if transaction_id and transaction_id.strip():
 
             # Initialize URI
-            create_acl_uri = self.ACL_URI_TEMPLATE_TX.format(
-                acl_uri=self.ACL_URI.format(index=index),
+            create_http_rq_rule_uri = self.RQ_RULE_URI_TEMPLATE_TX.format(
+                http_rq_rule_uri=self.RQ_RULE_URI.format(index=index),
                 transaction_id=transaction_id,
                 parent_name=parent_name,
                 parent_type=parent_type
@@ -262,8 +262,8 @@ class AclClient:
             config_version = self.configuration.get_configuration_version()
 
             # Initialize URI
-            create_acl_uri = self.ACL_URI_TEMPLATE_VERSION.format(
-                acl_uri=self.ACL_URI.format(index=index),
+            create_http_rq_rule_uri = self.RQ_RULE_URI_TEMPLATE_VERSION.format(
+                http_rq_rule_uri=self.RQ_RULE_URI.format(index=index),
                 config_version=config_version,
                 force_reload=force_reload,
                 parent_name=parent_name,
@@ -273,14 +273,14 @@ class AclClient:
         # Build the Operation URL
         url = self.URL_TEMPLATE.format(
             base_url=self.base_url,
-            uri=create_acl_uri,
+            uri=create_http_rq_rule_uri,
             version=self.api_version
         )
 
         # Execute Request
         response = requests.put(
             url=url,
-            json=filter_none(acl),
+            json=filter_none(rule),
             headers={
                 "Content-Type": self.CONTENT_TYPE_JSON
             },
@@ -298,14 +298,14 @@ class AclClient:
             # Raise Exception
             response.raise_for_status()
 
-    def delete_acl(self, index: int, transaction_id: str, parent_name: str, parent_type: str = 'backend', force_reload: bool = True):
+    def delete_rule(self, index: int, transaction_id: str, parent_name: str, parent_type: str = 'backend', force_reload: bool = True):
         """
-        Delete a Acl on HAProxy API.
+        Delete a HttpRequestRule on HAProxy API.
 
         Args:
-            index (str): The Acl Index
+            index (str): The rule Index
             transaction_id (str): Started Transaction ID
-            parent_name (str): The name of the Acl Parent
+            parent_name (str): The name of the HttpRequestRule Parent
             parent_type (str): The Type of the Parent
             force_reload (bool): Force Reload HA Proxy Configuration (used if no Transaction ID Provided)
 
@@ -317,8 +317,8 @@ class AclClient:
         if transaction_id and transaction_id.strip():
 
             # Initialize URI
-            create_acl_uri = self.ACL_URI_TEMPLATE_TX.format(
-                acl_uri=self.ACL_URI.format(index=index),
+            create_http_rq_rule_uri = self.RQ_RULE_URI_TEMPLATE_TX.format(
+                http_rq_rule_uri=self.RQ_RULE_URI.format(index=index),
                 transaction_id=transaction_id,
                 parent_name=parent_name,
                 parent_type=parent_type
@@ -330,8 +330,8 @@ class AclClient:
             config_version = self.configuration.get_configuration_version()
 
             # Initialize URI
-            create_acl_uri = self.ACL_URI_TEMPLATE_VERSION.format(
-                acl_uri=self.ACL_URI.format(index=index),
+            create_http_rq_rule_uri = self.RQ_RULE_URI_TEMPLATE_VERSION.format(
+                http_rq_rule_uri=self.RQ_RULE_URI.format(index=index),
                 config_version=config_version,
                 force_reload=force_reload,
                 parent_name=parent_name,
@@ -341,7 +341,7 @@ class AclClient:
         # Build the Operation URL
         url = self.URL_TEMPLATE.format(
             base_url=self.base_url,
-            uri=create_acl_uri,
+            uri=create_http_rq_rule_uri,
             version=self.api_version
         )
 

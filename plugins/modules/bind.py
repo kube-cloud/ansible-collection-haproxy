@@ -360,6 +360,7 @@ from ..module_utils.client_binds import BindClient
 from ..module_utils.haproxy import haproxy_client
 from ..module_utils.models import Bind
 from ..module_utils.enums import Requirement, SSLVersion, FrontendLevel
+from ..module_utils.commons import filter_none
 
 try:
     from requests import HTTPError  # type: ignore
@@ -369,7 +370,7 @@ except ImportError:
 
 
 # Find and Return Bind
-def get_bind(module: AnsibleModule, client: BindClient, name: str, parent_name: str, parent_type: str):
+def get_bind(client: BindClient, name: str, parent_name: str, parent_type: str):
 
     try:
 
@@ -380,17 +381,10 @@ def get_bind(module: AnsibleModule, client: BindClient, name: str, parent_name: 
             parent_type=parent_type
         )
 
-    except HTTPError as api_error:
+    except HTTPError:
 
-        # Set Module Error
-        module.fail_json(
-            msg="[Find Bind] - Failed Get HA Proxy Bind (Name : {0}, Parent : {1}:{2}): {3}".format(
-                name,
-                parent_name,
-                parent_type,
-                api_error
-            )
-        )
+        # Return None
+        return None
 
 
 # Update Bind
@@ -623,7 +617,6 @@ def run_module(module: AnsibleModule, client: BindClient):
 
     # Find Existing Instance
     existing_bind = get_bind(
-        module=module,
         client=client,
         name=bind.name,
         parent_name=parent_name,
@@ -657,6 +650,9 @@ def run_module(module: AnsibleModule, client: BindClient):
         # Module Response : Changed
         module.exit_json(
             changed=True,
+            parent_name=parent_name,
+            parent_type=parent_type,
+            instance=filter_none(bind),
             msg="Bind [{0} - {1}/{2}] Has Been Updated".format(bind.name, parent_name, parent_type)
         )
 
@@ -677,6 +673,9 @@ def run_module(module: AnsibleModule, client: BindClient):
         # Initialize Module Response : Changed
         module.exit_json(
             changed=True,
+            parent_name=parent_name,
+            parent_type=parent_type,
+            instance=filter_none(bind),
             msg="Bind [{0} - {1}/{2}] Has Been Created".format(bind.name, parent_name, parent_type)
         )
 

@@ -122,6 +122,7 @@ from ..module_utils.client_backend_switching_rules import BackendSwitchingRuleCl
 from ..module_utils.models import BackendSwitchingRule
 from ..module_utils.haproxy import haproxy_client
 from ..module_utils.enums import ConditionType
+from ..module_utils.commons import filter_none
 
 try:
     from requests import HTTPError  # type: ignore
@@ -131,7 +132,7 @@ except ImportError:
 
 
 # Find and Return BE Switching Rule
-def get_rule(module: AnsibleModule, client: BackendSwitchingRuleClient, index: int, frontend_name: str):
+def get_rule(client: BackendSwitchingRuleClient, index: int, frontend_name: str):
 
     try:
 
@@ -141,16 +142,10 @@ def get_rule(module: AnsibleModule, client: BackendSwitchingRuleClient, index: i
             frontend_name=frontend_name
         )
 
-    except HTTPError as api_error:
+    except HTTPError:
 
-        # Set Module Error
-        module.fail_json(
-            msg="[Find Rule] - Failed Get HA Proxy Rule (Index : {0}, Frontend : {1}): {2}".format(
-                index,
-                frontend_name,
-                api_error
-            )
-        )
+        # Return None
+        return None
 
 
 # Update BE Switching Rule
@@ -305,7 +300,6 @@ def run_module(module: AnsibleModule, client: BackendSwitchingRuleClient):
 
     # Find Existing Instance
     existing_instance = get_rule(
-        module=module,
         client=client,
         index=rule.index,
         frontend_name=rule_frontend
@@ -341,7 +335,7 @@ def run_module(module: AnsibleModule, client: BackendSwitchingRuleClient):
         # Module Response : Changed
         module.exit_json(
             changed=True,
-            instance=rule,
+            instance=filter_none(rule),
             frontend=rule_frontend,
             msg="Rule [Frontend : {0}, Name : {1}/{2}] Has Been Updated".format(
                 rule_frontend,
@@ -366,7 +360,7 @@ def run_module(module: AnsibleModule, client: BackendSwitchingRuleClient):
         # Initialize Module Response : Changed
         module.exit_json(
             changed=True,
-            instance=rule,
+            instance=filter_none(rule),
             frontend=rule_frontend,
             msg="Rule [Frontend : {0}, Name : {1}/{2}] Has Been Created".format(
                 rule_frontend,

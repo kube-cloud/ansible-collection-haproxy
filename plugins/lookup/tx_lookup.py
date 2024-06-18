@@ -53,12 +53,6 @@ _raw:
 from ansible.plugins.lookup import LookupBase
 from ..module_utils.haproxy import haproxy_client
 
-try:
-    from requests import HTTPError  # type: ignore
-    IMPORTS_OK = True
-except ImportError:
-    IMPORTS_OK = False
-
 
 class LookupModule(LookupBase):
 
@@ -66,16 +60,7 @@ class LookupModule(LookupBase):
     def run(self, terms, variables, **kwargs):
 
         # Build Client
-        client = haproxy_client(variables)
+        client = haproxy_client(kwargs).transaction
 
-        try:
-
-            # Create and return Transaction
-            return client.create_transaction()
-
-        except HTTPError as api_error:
-
-            # Rethrow
-            raise HTTPError(msg="[Create Transaction] - Failed Create New Transaction ({0})".format(
-                api_error
-            ))
+        # Create and return Transaction
+        return [client.create_transaction()]

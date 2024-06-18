@@ -172,6 +172,7 @@ from ..module_utils.client_frontends import FrontendClient
 from ..module_utils.haproxy import haproxy_client
 from ..module_utils.models import Frontend, ForwardFor
 from ..module_utils.enums import ProxyProtocol, EnableDisableEnum
+from ..module_utils.commons import filter_none
 
 try:
     from requests import HTTPError  # type: ignore
@@ -181,22 +182,17 @@ except ImportError:
 
 
 # Find and Return Frontend
-def get_frontend(module: AnsibleModule, client: FrontendClient, name: str):
+def get_frontend(client: FrontendClient, name: str):
 
     try:
 
         # Call Client
         return client.get_frontend(name=name)
 
-    except HTTPError as api_error:
+    except HTTPError:
 
-        # Set Module Error
-        module.fail_json(
-            msg="[Find Frontend] - Failed Get HA Proxy Frontend (Name : {0}): {1}".format(
-                name,
-                api_error
-            )
-        )
+        # Return None
+        return None
 
 
 # Update Frontend
@@ -336,7 +332,6 @@ def build_requested_frontend(params: dict) -> Frontend:
         "maxconn",
         "enabled",
         "error_log_format",
-        "transaction_id",
         "httplog"
     ]
 
@@ -388,7 +383,6 @@ def run_module(module: AnsibleModule, client: FrontendClient):
 
     # Find Existing Instance
     existing_frontend = get_frontend(
-        module=module,
         client=client,
         name=frontend.name
     )
@@ -418,6 +412,7 @@ def run_module(module: AnsibleModule, client: FrontendClient):
         # Module Response : Changed
         module.exit_json(
             changed=True,
+            instance=filter_none(frontend),
             msg="Frontend [{0} - {1}] Has Been Updated".format(frontend.name, frontend.mode)
         )
 
@@ -436,6 +431,7 @@ def run_module(module: AnsibleModule, client: FrontendClient):
         # Initialize Module Response : Changed
         module.exit_json(
             changed=True,
+            instance=filter_none(frontend),
             msg="[{0} - {1}] Has been Created".format(frontend.name, frontend.mode)
         )
 

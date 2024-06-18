@@ -2,6 +2,7 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 from .client_configurations import ConfigurationClient
+from .commons import is_2xx
 
 try:
     import requests
@@ -22,14 +23,17 @@ class TransactionClient:
     # Définir la constante pour application/json
     CONTENT_TYPE_JSON = "application/json"
 
+    # Get All Transactions URI
+    GET_ALL_TRANSACTIONS_URI = "services/haproxy/transactions"
+
     # Create Transaction URI
-    CREATE_TRANSACTION_URI = "services/haproxy/configuration/transactions?version={config_number}"
+    TRANSACTION_BY_VERSION_URI = "services/haproxy/transactions?version={config_version}"
 
     # Validate Transaction URI
-    VALIDATE_TRANSACTION_URI = "services/haproxy/configuration/transactions/{transaction_id}&force_reload={force_reload}"
+    VALIDATE_TRANSACTION_URI = "services/haproxy/transactions/{transaction_id}?force_reload={force_reload}"
 
     # Cancel Transaction URI
-    CANCEL_TRANSACTION_URI = "services/haproxy/configuration/transactions/{transaction_id}"
+    CANCEL_TRANSACTION_URI = "services/haproxy/transactions/{transaction_id}"
 
     # URL Format
     URL_TEMPLATE = "{base_url}/{version}/{uri}"
@@ -91,7 +95,7 @@ class TransactionClient:
         # Build the Operation URL
         url = self.URL_TEMPLATE.format(
             base_url=self.base_url,
-            uri=self.CREATE_TRANSACTION_URI.format(config_version=config_version),
+            uri=self.TRANSACTION_BY_VERSION_URI.format(config_version=config_version),
             version=self.api_version
         )
 
@@ -99,7 +103,50 @@ class TransactionClient:
         response = requests.post(url, auth=self.auth)
 
         # If Object Exists
-        if response.status_code == 200:
+        if is_2xx(response.status_code):
+
+            # Return JSON
+            return response.json()
+
+        else:
+
+            # Raise Exception
+            response.raise_for_status()
+
+    def get_transactions(self, config_version: str = ''):
+        """
+        Get All Active HAProxy Data Plane API Transaction Details.
+
+        Args:
+            config_version (str): The Transaction Configuration Version.
+
+        Raises:
+            requests.exceptions.HTTPError: If the API request fails.
+        """
+
+        # Get Transaction URI
+        get_tx_uri = self.GET_ALL_TRANSACTIONS_URI
+
+        # If Configuration Version is provided
+        if bool(config_version and config_version.strip()):
+
+            # Initialize TX URI
+            get_tx_uri = self.TRANSACTION_BY_VERSION_URI.format(
+                config_version=config_version.strip()
+            )
+
+        # Build the GET Transaction URL
+        url = self.URL_TEMPLATE.format(
+            base_url=self.base_url,
+            uri=get_tx_uri,
+            version=self.api_version
+        )
+
+        # Execute Request
+        response = requests.get(url, auth=self.auth)
+
+        # If Object Exists
+        if is_2xx(response.status_code):
 
             # Return JSON
             return response.json()
@@ -132,7 +179,7 @@ class TransactionClient:
         response = requests.get(url, auth=self.auth)
 
         # If Object Exists
-        if response.status_code == 200:
+        if is_2xx(response.status_code):
 
             # Return JSON
             return response.json()
@@ -167,7 +214,7 @@ class TransactionClient:
         response = requests.put(url, auth=self.auth)
 
         # If Object Exists
-        if response.status_code == 200:
+        if is_2xx(response.status_code):
 
             # Return JSON
             return response.json()
@@ -183,6 +230,7 @@ class TransactionClient:
 
         Args:
             transaction_id (str): The Transaction to Commit.
+
         Raises:
             requests.exceptions.HTTPError: If the API request fails.
         """
@@ -200,12 +248,36 @@ class TransactionClient:
         response = requests.delete(url, auth=self.auth)
 
         # If Object Exists
-        if response.status_code == 200:
-
-            # Return JSON
-            return response.json()
-
-        else:
+        if not is_2xx(response.status_code):
 
             # Raise Exception
             response.raise_for_status()
+
+    def cancel_transactions(self, config_version: str = ''):
+        """
+        Cancel All in-progress HAProxy Data Plane API Transaction and Details.
+
+        Raises:
+            requests.exceptions.HTTPError: If the API request fails.
+        """
+
+        # Get Active Transactions
+        active_transactions = self.get_transactions(config_version=config_version)
+
+        # Cleaned Transactionx
+        cleaned_transations = []
+
+        # If There are Transations
+        if active_transactions:
+
+            # Iterate
+            for tx in active_transactions:
+
+                # Cancel Transaction
+                self.cancel_transaction(transaction_id=tx["id"])
+
+                # Add Cleaned TX to Array
+                cleaned_transations.append(tx)
+
+        # Return List of Cleaned TX
+        return cleaned_transations

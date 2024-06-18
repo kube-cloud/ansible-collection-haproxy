@@ -64,7 +64,7 @@ options:
 
 EXAMPLES = r'''
 - name: "Commit HA Proxy Dataplane API Transaction"
-  kube_cloud.haproxy.backend:
+  kube_cloud.haproxy.transaction:
     base_url: "http://localhost:5555"
     username: "admin"
     password: "admin"
@@ -74,7 +74,7 @@ EXAMPLES = r'''
     state: 'committed'
 
 - name: "Cancel HA Proxy Dataplane API Transaction"
-  kube_cloud.haproxy.backend:
+  kube_cloud.haproxy.transaction:
     base_url: "http://localhost:5555"
     username: "admin"
     password: "admin"
@@ -139,7 +139,7 @@ def cancel_transaction(module: AnsibleModule, client: TransactionClient, transac
 
 
 # Get Transaction
-def get_transaction(module: AnsibleModule, client: TransactionClient, transaction_id: str):
+def get_transaction(client: TransactionClient, transaction_id: str):
 
     try:
 
@@ -148,15 +148,10 @@ def get_transaction(module: AnsibleModule, client: TransactionClient, transactio
             transaction_id=transaction_id
         )
 
-    except HTTPError as api_error:
+    except HTTPError:
 
-        # Set Module Error
-        module.fail_json(
-            msg="[Get Transaction] - Failed Get HA Proxy Dataplane API Transaction (ID : {0}): {1}".format(
-                transaction_id,
-                api_error
-            )
-        )
+        # Return None
+        return None
 
 
 # Instantiate Ansible Module
@@ -210,7 +205,6 @@ def run_module(module: AnsibleModule, client: TransactionClient):
 
     # Find Existing Instance
     existing_instance = get_transaction(
-        module=module,
         client=client,
         transaction_id=transaction_id
     )
