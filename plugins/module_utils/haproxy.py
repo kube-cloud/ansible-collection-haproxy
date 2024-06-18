@@ -109,7 +109,7 @@ class Client:
         )
 
         # Initialize Backend Switching Rule Client
-        self.request_rule = BackendSwitchingRuleClient(
+        self.besr = BackendSwitchingRuleClient(
             base_url=base_url,
             api_version=api_version,
             auth=self.auth
@@ -130,7 +130,7 @@ class Client:
         )
 
         # Initialize Http Request Rule Client
-        self.besr = HttpRequestRuleClient(
+        self.request_rule = HttpRequestRuleClient(
             base_url=base_url,
             api_version=api_version,
             auth=self.auth
