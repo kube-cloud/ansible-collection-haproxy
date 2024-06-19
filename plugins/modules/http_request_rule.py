@@ -330,9 +330,9 @@ EXAMPLES = r'''
     index: 0
     parent_name: "test_frontend"
     parent_type: "frontend"
-    cond: "if"
+    cond: "IF"
     cond_test: "{ path /admin.php } !{ src 192.168.50.20/24 }"
-    type: "deny"
+    type: "DENY"
     state: 'present'
 
 - name: "Delete HA Proxy HTTP Request Rule"
