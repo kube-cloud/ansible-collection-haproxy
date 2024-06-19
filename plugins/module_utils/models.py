@@ -8,6 +8,8 @@ from .enums import WebSocketProtocol, HealthCheckType, TimeoutStatus
 from .enums import ErrorStatus, OkStatus, HttpMethod, ProxyProtocol, FrontendLevel
 from .enums import CompressionAlgorithm, SSLVersion, Requirement, MatchType
 from .enums import AdvancedHealthCheckType, MySqlVersionCheckType, ConditionType
+from .enums import HttpRequestRuleType, LogLevel, HttpRequestRuleNormalizerType
+from .enums import IPProtocol, RedirectType
 
 
 # Load Balancing Configuration
@@ -157,12 +159,6 @@ class Server:
         # Ajoutez ici des validations si nécessaire
         if not self.name:
             raise ValueError("[Server] - The 'name' field is required.")
-
-        if not self.address:
-            raise ValueError("[Server] - The 'address' field is required.")
-
-        if self.port is None or self.port < 0:
-            raise ValueError("[Server] - The 'port' field must be a positive integer.")
 
 
 # HTTP HealthCheck Configuration
@@ -359,6 +355,55 @@ class IgnorePersist:
         # Ajoutez ici des validations si nécessaire
         if not self.cond_test:
             raise ValueError("[IgnorePersist] - The 'cond_test' field is required.")
+
+
+# HTTP Request Rule Configuration
+@dataclass
+class HttpRequestRule:
+    index: int
+    type: Optional[HttpRequestRuleType] = None
+    acl_file: Optional[str] = None
+    acl_keyfmt: Optional[str] = None
+    auth_realm: Optional[str] = None
+    bandwidth_limit_limit: Optional[str] = None
+    bandwidth_limit_name: Optional[str] = None
+    bandwidth_limit_period: Optional[str] = None
+    capture_id: Optional[int] = None
+    capture_len: Optional[int] = None
+    capture_sample: Optional[str] = None
+    cond: Optional[ConditionType] = None
+    cond_test: Optional[str] = None
+    deny_status: Optional[int] = None
+    expr: Optional[str] = None
+    hdr_format: Optional[str] = None
+    hdr_match: Optional[str] = None
+    hdr_method: Optional[str] = None
+    hdr_name: Optional[str] = None
+    hint_format: Optional[str] = None
+    hint_name: Optional[str] = None
+    log_level: Optional[LogLevel] = None
+    lua_action: Optional[str] = None
+    lua_params: Optional[str] = None
+    map_file: Optional[str] = None
+    map_keyfmt: Optional[str] = None
+    map_valuefmt: Optional[str] = None
+    mark_value: Optional[str] = None
+    method_fmt: Optional[str] = None
+    nice_value: Optional[int] = None
+    normalizer: Optional[HttpRequestRuleNormalizerType] = None
+    normalizer_full: Optional[bool] = None
+    normalizer_strict: Optional[bool] = None
+    path_fmt: Optional[str] = None
+    path_match: Optional[str] = None
+    protocol: Optional[IPProtocol] = None
+    redir_code: Optional[int] = None
+    redir_option: Optional[str] = None
+    redir_type: Optional[RedirectType] = None
+    redir_value: Optional[str] = None
+    resolvers: Optional[str] = None
+    return_content: Optional[str] = None
+    return_content_type: Optional[str] = None
+    return_status_code: Optional[int] = None
 
 
 # Backend Configuration

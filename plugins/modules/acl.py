@@ -131,6 +131,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ..module_utils.client_acls import AclClient
 from ..module_utils.models import Acl
 from ..module_utils.haproxy import haproxy_client
+from ..module_utils.commons import filter_none
 
 try:
     from requests import HTTPError  # type: ignore
@@ -140,7 +141,7 @@ except ImportError:
 
 
 # Find and Return ACL
-def get_acl(module: AnsibleModule, client: AclClient, index: int, parent_name: str, parent_type: str):
+def get_acl(client: AclClient, index: int, parent_name: str, parent_type: str):
 
     try:
 
@@ -151,17 +152,10 @@ def get_acl(module: AnsibleModule, client: AclClient, index: int, parent_name: s
             parent_type=parent_type
         )
 
-    except HTTPError as api_error:
+    except HTTPError:
 
-        # Set Module Error
-        module.fail_json(
-            msg="[Find ACL] - Failed Get HA Proxy ACL (Index : {0}, Parent : {1}:{2}): {3}".format(
-                index,
-                parent_name,
-                parent_type,
-                api_error
-            )
-        )
+        # Return None
+        return None
 
 
 # Update ACL
@@ -324,7 +318,6 @@ def run_module(module: AnsibleModule, client: AclClient):
 
     # Find Existing Instance
     existing_instance = get_acl(
-        module=module,
         client=client,
         index=acl.index,
         parent_name=acl_parent_name,
@@ -363,7 +356,7 @@ def run_module(module: AnsibleModule, client: AclClient):
         # Module Response : Changed
         module.exit_json(
             changed=True,
-            instance=acl,
+            instance=filter_none(acl),
             acl_parent_name=acl_parent_name,
             acl_parent_type=acl_parent_type,
             msg="ACL [Parent : {0}/{1}, Name : {2}/{3}] Has Been Updated".format(
@@ -391,7 +384,7 @@ def run_module(module: AnsibleModule, client: AclClient):
         # Initialize Module Response : Changed
         module.exit_json(
             changed=True,
-            instance=acl,
+            instance=filter_none(acl),
             acl_parent_name=acl_parent_name,
             acl_parent_type=acl_parent_type,
             msg="ACL [Parent : {0}/{1}, Name : {2}/{3}] Has Been Created".format(
@@ -452,7 +445,7 @@ def main():
     module = build_ansible_module()
 
     # Build Client from Module
-    client = build_client(module).backend
+    client = build_client(module).acl
 
     # Execute Module
     run_module(module, client)

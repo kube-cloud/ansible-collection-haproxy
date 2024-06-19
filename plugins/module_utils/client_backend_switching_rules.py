@@ -1,7 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-from .commons import dataclass_to_payload
+from .commons import filter_none, is_2xx
 from .models import BackendSwitchingRule
 from .client_configurations import ConfigurationClient
 
@@ -104,7 +104,7 @@ class BackendSwitchingRuleClient:
         response = requests.get(url, auth=self.auth)
 
         # If Object Exists
-        if response.status_code == 200:
+        if is_2xx(response.status_code):
 
             # Return JSON
             return response.json()
@@ -143,7 +143,7 @@ class BackendSwitchingRuleClient:
         response = requests.get(url, auth=self.auth)
 
         # If Object Exists
-        if response.status_code == 200:
+        if is_2xx(response.status_code):
 
             # Return JSON
             return response.json()
@@ -203,7 +203,7 @@ class BackendSwitchingRuleClient:
         # Execute Request
         response = requests.post(
             url=url,
-            json=dataclass_to_payload(besr),
+            json=filter_none(besr),
             headers={
                 "Content-Type": self.CONTENT_TYPE_JSON
             },
@@ -211,7 +211,7 @@ class BackendSwitchingRuleClient:
         )
 
         # If Object Exists
-        if response.status_code == 200:
+        if is_2xx(response.status_code):
 
             # Return JSON
             return response.json()
@@ -272,7 +272,7 @@ class BackendSwitchingRuleClient:
         # Execute Request
         response = requests.put(
             url=url,
-            json=dataclass_to_payload(besr),
+            json=filter_none(besr),
             headers={
                 "Content-Type": self.CONTENT_TYPE_JSON
             },
@@ -280,7 +280,7 @@ class BackendSwitchingRuleClient:
         )
 
         # If Object Exists
-        if response.status_code == 200:
+        if is_2xx(response.status_code):
 
             # Return JSON
             return response.json()
@@ -345,12 +345,7 @@ class BackendSwitchingRuleClient:
         )
 
         # If Object Exists
-        if response.status_code == 200:
-
-            # Return JSON
-            return response.json()
-
-        else:
+        if not is_2xx(response.status_code):
 
             # Raise Exception
             response.raise_for_status()

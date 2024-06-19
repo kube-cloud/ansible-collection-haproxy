@@ -6,7 +6,10 @@ from .client_frontends import FrontendClient
 from .client_transactions import TransactionClient
 from .client_configurations import ConfigurationClient
 from .client_acls import AclClient
+from .client_servers import ServerClient
 from .client_backend_switching_rules import BackendSwitchingRuleClient
+from .client_http_request_rules import HttpRequestRuleClient
+from .client_binds import BindClient
 
 try:
     from requests.auth import HTTPBasicAuth     # type: ignore
@@ -107,6 +110,27 @@ class Client:
 
         # Initialize Backend Switching Rule Client
         self.besr = BackendSwitchingRuleClient(
+            base_url=base_url,
+            api_version=api_version,
+            auth=self.auth
+        )
+
+        # Initialize Bind Client
+        self.bind = BindClient(
+            base_url=base_url,
+            api_version=api_version,
+            auth=self.auth
+        )
+
+        # Initialize Server Client
+        self.server = ServerClient(
+            base_url=base_url,
+            api_version=api_version,
+            auth=self.auth
+        )
+
+        # Initialize Http Request Rule Client
+        self.request_rule = HttpRequestRuleClient(
             base_url=base_url,
             api_version=api_version,
             auth=self.auth

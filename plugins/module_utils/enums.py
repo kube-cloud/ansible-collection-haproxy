@@ -5,7 +5,7 @@ from enum import Enum
 
 
 # Base Enumeration
-class BaseEnum(Enum):
+class BaseEnum(str, Enum):
 
     # Create Instance
     @classmethod
@@ -28,6 +28,20 @@ class BaseEnum(Enum):
 
         # Return None
         return None
+
+    # Return Name List
+    @classmethod
+    def names(cls):
+
+        # return Name List
+        return [e.name for e in cls]
+
+    # Return Values List
+    @classmethod
+    def values(cls):
+
+        # return Value List
+        return [e.value for e in cls]
 
 
 # Definition of the enumeration EnableDisableEnum
@@ -375,3 +389,139 @@ class ConditionType(BaseEnum):
     """
     IF = "if"
     UNLESS = "unless"
+
+
+# Timeout Type
+class TimeoutType(BaseEnum):
+    """
+    Represents HTTP Request Rule Timeout Type.
+
+    Attributes:
+        SERVER (str): SERVER Type.
+        TUNNEL (str): TUNNEL Type.
+    """
+    SERVER = "server"
+    TUNNEL = "tunnel"
+
+
+# Log Level
+class LogLevel(BaseEnum):
+    # Emergency: system is unusable
+    EMERG = "emerg"
+    # Alert: action must be taken immediately
+    ALERT = "alert"
+    # Critical: critical conditions
+    CRIT = "crit"
+    # Error: error conditions
+    ERR = "err"
+    # Warning: warning conditions
+    WARNING = "warning"
+    # Notice: normal but significant condition
+    NOTICE = "notice"
+    # Informational: informational messages
+    INFO = "info"
+    # Debug: debug-level messages
+    DEBUG = "debug"
+    # Silent: no logging
+    SILENT = "silent"
+
+
+# Normalizer Type
+class HttpRequestRuleNormalizerType(BaseEnum):
+    # Encode URL fragments
+    FRAGMENT_ENCODE = "fragment-encode"
+    # Strip URL fragments
+    FRAGMENT_STRIP = "fragment-strip"
+    # Merge consecutive slashes in URL paths
+    PATH_MERGE_SLASHES = "path-merge-slashes"
+    # Strip single dot segments from URL paths
+    PATH_STRIP_DOT = "path-strip-dot"
+    # Strip double dot segments from URL paths
+    PATH_STRIP_DOTDOT = "path-strip-dotdot"
+    # Decode percent-encoded unreserved characters
+    PERCENT_DECODE_UNRESERVED = "percent-decode-unreserved"
+    # Convert percent-encoded characters to uppercase
+    PERCENT_TO_UPPERCASE = "percent-to-uppercase"
+    # Sort query parameters by name
+    QUERY_SORT_BY_NAME = "query-sort-by-name"
+
+
+# IP Protocols
+class IPProtocol(BaseEnum):
+    # Internet Protocol version 4
+    IPV4 = "ipv4"
+    # Internet Protocol version 6
+    IPV6 = "ipv6"
+
+
+# Reditection Type
+class RedirectType(BaseEnum):
+    # Redirection based on a specific URL location
+    LOCATION = "location"
+    # Redirection by prefixing a specific part of the URL
+    PREFIX = "prefix"
+    # Redirection based on the URL scheme (e.g., HTTP to HTTPS)
+    SCHEME = "scheme"
+
+
+# HTTP Request Rule Type
+class HttpRequestRuleType(BaseEnum):
+    ADD_ACL = "add-acl"
+    ADD_HEADER = "add-header"
+    ALLOW = "allow"
+    AUTH = "auth"
+    CACHE_USE = "cache-use"
+    CAPTURE = "capture"
+    DEL_ACL = "del-acl"
+    DEL_HEADER = "del-header"
+    DEL_MAP = "del-map"
+    DENY = "deny"
+    DISABLE_L7_RETRY = "disable-l7-retry"
+    DO_RESOLVE = "do-resolve"
+    EARLY_HINT = "early-hint"
+    LUA = "lua"
+    NORMALIZE_URI = "normalize-uri"
+    REDIRECT = "redirect"
+    REJECT = "reject"
+    REPLACE_HEADER = "replace-header"
+    REPLACE_PATH = "replace-path"
+    REPLACE_PATHQ = "replace-pathq"
+    REPLACE_URI = "replace-uri"
+    REPLACE_VALUE = "replace-value"
+    RETURN = "return"
+    SC_ADD_GPC = "sc-add-gpc"
+    SC_INC_GPC = "sc-inc-gpc"
+    SC_INC_GPC0 = "sc-inc-gpc0"
+    SC_INC_GPC1 = "sc-inc-gpc1"
+    SC_SET_GPT0 = "sc-set-gpt0"
+    SEND_SPOE_GROUP = "send-spoe-group"
+    SET_DST = "set-dst"
+    SET_DST_PORT = "set-dst-port"
+    SET_HEADER = "set-header"
+    SET_LOG_LEVEL = "set-log-level"
+    SET_MAP = "set-map"
+    SET_MARK = "set-mark"
+    SET_METHOD = "set-method"
+    SET_NICE = "set-nice"
+    SET_PATH = "set-path"
+    SET_PATHQ = "set-pathq"
+    SET_PRIORITY_CLASS = "set-priority-class"
+    SET_PRIORITY_OFFSET = "set-priority-offset"
+    SET_QUERY = "set-query"
+    SET_SRC = "set-src"
+    SET_SRC_PORT = "set-src-port"
+    SET_TIMEOUT = "set-timeout"
+    SET_TOS = "set-tos"
+    SET_URI = "set-uri"
+    SET_VAR = "set-var"
+    SILENT_DROP = "silent-drop"
+    STRICT_MODE = "strict-mode"
+    TARPIT = "tarpit"
+    TRACK_SC0 = "track-sc0"
+    TRACK_SC1 = "track-sc1"
+    TRACK_SC2 = "track-sc2"
+    UNSET_VAR = "unset-var"
+    USE_SERVICE = "use-service"
+    WAIT_FOR_BODY = "wait-for-body"
+    WAIT_FOR_HANDSHAKE = "wait-for-handshake"
+    SET_BANDWIDTH_LIMIT = "set-bandwidth-limit"

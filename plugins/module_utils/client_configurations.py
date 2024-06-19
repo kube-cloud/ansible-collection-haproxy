@@ -1,6 +1,8 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
+from .commons import is_2xx
+
 try:
     import requests
     IMPORTS_OK = True
@@ -78,7 +80,7 @@ class ConfigurationClient:
         response = requests.get(url, auth=self.auth)
 
         # If Object Exists
-        if response.status_code == 200:
+        if is_2xx(response.status_code):
 
             # Return JSON
             return response.json()

@@ -7,9 +7,9 @@ from typing import Dict, Any
 
 # Build and Return Payload from Dict Object
 # Filter All NONE Fields
-def dataclass_to_payload(instance: Any) -> Dict[str, Any]:
+def filter_none(instance: Any) -> Dict[str, Any]:
     """
-    Converts a dataclass instance to a dictionary payload.
+    Filter All fields with None Value
 
     Only includes fields that are not None and handles nested dataclasses and lists.
 
@@ -20,17 +20,11 @@ def dataclass_to_payload(instance: Any) -> Dict[str, Any]:
         Dict[str, Any]: The resulting dictionary payload.
     """
 
-    # Payload to return
-    payload = {}
-
-    # Ierate on instance Field
-    for field_name, field_value in asdict(instance).items():
-
-        # If Value is not NONE
-        if field_value is not None:
-
-            # Add Value to the resulting Dict
-            payload[field_name] = field_value
-
     # Return Payload
-    return payload
+    return {name: value for name, value in asdict(instance).items() if value is not None}
+
+
+# Check if Http Status Code is OK
+def is_2xx(status_code: int):
+
+    return (200 <= status_code < 300)
