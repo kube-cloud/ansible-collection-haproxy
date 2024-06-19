@@ -233,7 +233,7 @@ class FrontendClient:
 
             # Initialize URI
             create_frontend_uri = self.FRONTEND_URI_TEMPLATE_TX.format(
-                frontend_uri=self.FRONTEND_URI.format("name", name),
+                frontend_uri=self.FRONTEND_URI.format(name=name),
                 transaction_id=transaction_id
             )
 
@@ -244,7 +244,7 @@ class FrontendClient:
 
             # Initialize URI
             create_frontend_uri = self.FRONTEND_URI_TEMPLATE_VERSION.format(
-                frontend_uri=self.FRONTEND_URI.format("name", name),
+                frontend_uri=self.FRONTEND_URI.format(name=name),
                 config_version=config_version,
                 force_reload=force_reload
             )
@@ -295,7 +295,7 @@ class FrontendClient:
 
             # Initialize URI
             create_frontend_uri = self.FRONTEND_URI_TEMPLATE_TX.format(
-                frontend_uri=self.FRONTEND_URI.format("name", name),
+                frontend_uri=self.FRONTEND_URI.format(name=name),
                 transaction_id=transaction_id
             )
 
@@ -306,7 +306,7 @@ class FrontendClient:
 
             # Initialize URI
             create_frontend_uri = self.FRONTEND_URI_TEMPLATE_VERSION.format(
-                frontend_uri=self.FRONTEND_URI.format("name", name),
+                frontend_uri=self.FRONTEND_URI.format(name=name),
                 config_version=config_version,
                 force_reload=force_reload
             )
