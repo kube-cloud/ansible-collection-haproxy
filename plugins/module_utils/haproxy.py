@@ -10,6 +10,7 @@ from .client_servers import ServerClient
 from .client_backend_switching_rules import BackendSwitchingRuleClient
 from .client_http_request_rules import HttpRequestRuleClient
 from .client_binds import BindClient
+from .client_ssl_certificates import SslCertificateClient
 
 try:
     from requests.auth import HTTPBasicAuth     # type: ignore
@@ -131,6 +132,13 @@ class Client:
 
         # Initialize Http Request Rule Client
         self.request_rule = HttpRequestRuleClient(
+            base_url=base_url,
+            api_version=api_version,
+            auth=self.auth
+        )
+
+        # Initialize SSL Certificate Client
+        self.ssl_certificate = SslCertificateClient(
             base_url=base_url,
             api_version=api_version,
             auth=self.auth
