@@ -262,9 +262,8 @@ def run_module(module: AnsibleModule, client: SslCertificateClient):
 
             # Initialize response (No Change)
             module.exit_json(
-                msg="Certificate [{0} - {1}] Not Changed".format(
-                    name,
-                    existing_certificate.file
+                msg="Certificate [{0}] Not Changed".format(
+                    name
                 ),
                 changed=False
             )
@@ -282,7 +281,7 @@ def run_module(module: AnsibleModule, client: SslCertificateClient):
         module.exit_json(
             changed=True,
             instance=existing_certificate,
-            msg="Certificate [{0} - {1}] Has Been Updated".format(name, existing_certificate.file)
+            msg="Certificate [{0}] Has Been Updated".format(name)
         )
 
     # If Requested State is 'present' and Instance don't exists
@@ -301,7 +300,7 @@ def run_module(module: AnsibleModule, client: SslCertificateClient):
         module.exit_json(
             changed=True,
             instance=certificate,
-            msg="Certificate[{0} - {1}] Has been Created".format(name, certificate.file)
+            msg="Certificate[{0}] Has been Created".format(name)
         )
 
     # If Requested State is 'absent' and Instance exists
@@ -317,7 +316,7 @@ def run_module(module: AnsibleModule, client: SslCertificateClient):
 
         # Exit Module
         module.exit_json(
-            msg="[{0} - {1}] Has been Deleted".format(name, existing_certificate.file),
+            msg="[{0}] Has been Deleted".format(name),
             changed=True
         )
 
