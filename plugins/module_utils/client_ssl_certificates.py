@@ -294,7 +294,10 @@ class SslCertificateClient:
         if is_2xx(response.status_code):
 
             # Return JSON
-            return response.json()
+            return {
+                "name": name,
+                "status": "deleted"
+            }
 
         else:
 
