@@ -204,7 +204,7 @@ class SslCertificateClient:
         finally:
 
             # Close File
-            files['file_upload'].close()
+            files['file_upload'][1].close()
 
         # If Object Exists
         if is_2xx(response.status_code):
