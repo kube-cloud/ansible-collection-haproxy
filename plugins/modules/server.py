@@ -111,7 +111,7 @@ options:
             - The HA Proxy Server Configuration check
         required: false
         type: str
-        choices: ['NONE', 'REQUIRED', 'OPTIONAL']
+        choices: ['ENABLED', 'DISABLED']
     health_check_address:
         description:
             - The HA Proxy Server Configuration health_check_address
@@ -142,6 +142,176 @@ options:
             - The HA Proxy Server Configuration minconn
         required: false
         type: int
+    npn:
+        description:
+            - The Backend Server Config Field 'npn'
+        required: false
+        type: str
+    fall:
+        description:
+            - The Backend Server Config Field 'fall'
+        required: false
+        type: int
+    rise:
+        description:
+            - The Backend Server Config Field 'rise'
+        required: false
+        type: int
+    inter:
+        description:
+            - The Backend Server Config Field 'inter'
+        required: false
+        type: int
+    fastinter:
+        description:
+            - The Backend Server Config Field 'fastinter'
+        required: false
+        type: int
+    error_limit:
+        description:
+            - The Backend Server Config Field 'error_limit'
+        required: false
+        type: int
+    pool_low_conn:
+        description:
+            - The Backend Server Config Field 'pool_low_conn'
+        required: false
+        type: int
+    pool_max_conn:
+        description:
+            - The Backend Server Config Field 'pool_max_conn'
+        required: false
+        type: int
+    pool_purge_delay:
+        description:
+            - The Backend Server Config Field 'pool_purge_delay'
+        required: false
+        type: int
+    proto:
+        description:
+            - The Backend Server Config Field 'proto'
+        required: false
+        type: str
+    redir:
+        description:
+            - The Backend Server Config Field 'redir'
+        required: false
+        type: str
+    resolve_opts:
+        description:
+            - The Backend Server Config Field 'resolve_opts'
+        required: false
+        type: str
+    resolvers:
+        description:
+            - The Backend Server Config Field 'resolvers'
+        required: false
+        type: str
+    ssl_cafile:
+        description:
+            - The Backend Server Config Field 'ssl_cafile'
+        required: false
+        type: str
+    ssl_certificate:
+        description:
+            - The Backend Server Config Field 'ssl_certificate'
+        required: false
+        type: str
+    tcp_ut:
+        description:
+            - The Backend Server Config Field 'tcp_ut'
+        required: false
+        type: int
+    maintenance:
+        description:
+            - The Backend Server Config Field 'maintenance'
+        required: false
+        type: str
+        choices: ['ENABLED', 'DISABLED']
+    no_sslv3:
+        description:
+            - The Backend Server Config Field 'no_sslv3'
+        required: false
+        type: str
+        choices: ['ENABLED', 'DISABLED']
+    no_tlsv10:
+        description:
+            - The Backend Server Config Field 'no_tlsv10'
+        required: false
+        type: str
+        choices: ['ENABLED', 'DISABLED']
+    no_tlsv11:
+        description:
+            - The Backend Server Config Field 'no_tlsv11'
+        required: false
+        type: str
+        choices: ['ENABLED', 'DISABLED']
+    no_tlsv12:
+        description:
+            - The Backend Server Config Field 'no_tlsv12'
+        required: false
+        type: str
+        choices: ['ENABLED', 'DISABLED']
+    no_tlsv13:
+        description:
+            - The Backend Server Config Field 'no_tlsv13'
+        required: false
+        type: str
+        choices: ['ENABLED', 'DISABLED']
+    no_verifyhost:
+        description:
+            - The Backend Server Config Field 'no_verifyhost'
+        required: false
+        type: str
+        choices: ['ENABLED', 'DISABLED']
+    stick:
+        description:
+            - The Backend Server Config Field 'stick'
+        required: false
+        type: str
+        choices: ['ENABLED', 'DISABLED']
+    tfo:
+        description:
+            - The Backend Server Config Field 'tfo'
+        required: false
+        type: str
+        choices: ['ENABLED', 'DISABLED']
+    send_proxy_v2_ssl:
+        description:
+            - The Backend Server Config Field 'send_proxy_v2_ssl'
+        required: false
+        type: str
+        choices: ['ENABLED', 'DISABLED']
+    send_proxy_v2_ssl_cn:
+        description:
+            - The Backend Server Config Field 'send_proxy_v2_ssl_cn'
+        required: false
+        type: str
+        choices: ['ENABLED', 'DISABLED']
+    ssl_reuse:
+        description:
+            - The Backend Server Config Field 'ssl_reuse'
+        required: false
+        type: str
+        choices: ['ENABLED', 'DISABLED']
+    ssl:
+        description:
+            - The Backend Server Config Field 'ssl'
+        required: false
+        type: str
+        choices: ['ENABLED', 'DISABLED']
+    ssl_max_ver:
+        description:
+            - The Backend Server Config Field 'ssl_max_ver'
+        required: false
+        type: str
+        choices: ['SSLv3', 'TLSv1_0', 'TLSv1_1', 'TLSv1_2', 'TLSv1_3']
+    ssl_min_ver:
+        description:
+            - The Backend Server Config Field 'ssl_min_ver'
+        required: false
+        type: str
+        choices: ['SSLv3', 'TLSv1_0', 'TLSv1_1', 'TLSv1_2', 'TLSv1_3']
     state:
         description:
             - The Transaction State
@@ -165,6 +335,8 @@ EXAMPLES = r'''
     name: "server1"
     address: "127.0.0.1"
     port: 8080
+    verify: 'ENABLED'
+    check: 'NONE'
     state: 'present'
 
 - name: "Cancel HA Proxy Dataplane API Transaction"
@@ -185,7 +357,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ..module_utils.client_servers import ServerClient
 from ..module_utils.models import Server
 from ..module_utils.haproxy import haproxy_client
-from ..module_utils.enums import WebSocketProtocol, Requirement
+from ..module_utils.enums import WebSocketProtocol, Requirement, EnableDisableEnum, SSLVersion
 from ..module_utils.commons import filter_none
 
 try:
@@ -319,13 +491,44 @@ def build_ansible_module():
         weight=dict(type='int', required=False),
         track=dict(type='str', required=False),
         ws=dict(type='str', required=False, choices=WebSocketProtocol.names()),
-        check=dict(type='str', required=False, choices=Requirement.names()),
+        check=dict(type='str', required=False, choices=EnableDisableEnum.names()),
         health_check_address=dict(type='str', required=False),
         health_check_port=dict(type='int', required=False),
         max_reuse=dict(type='int', required=False),
         maxconn=dict(type='int', required=False),
         maxqueue=dict(type='int', required=False),
         minconn=dict(type='int', required=False),
+        npn=dict(type='str', required=False),
+        fall=dict(type='int', required=False),
+        rise=dict(type='int', required=False),
+        inter=dict(type='int', required=False),
+        fastinter=dict(type='int', required=False),
+        error_limit=dict(type='int', required=False),
+        pool_low_conn=dict(type='int', required=False),
+        pool_max_conn=dict(type='int', required=False),
+        pool_purge_delay=dict(type='int', required=False),
+        proto=dict(type='str', required=False),
+        redir=dict(type='str', required=False),
+        resolve_opts=dict(type='str', required=False),
+        resolvers=dict(type='str', required=False),
+        ssl_cafile=dict(type='str', required=False),
+        ssl_certificate=dict(type='str', required=False),
+        tcp_ut=dict(type='int', required=False),
+        maintenance=dict(type='str', required=False, choices=EnableDisableEnum.names()),
+        no_sslv3=dict(type='str', required=False, choices=EnableDisableEnum.names()),
+        no_tlsv10=dict(type='str', required=False, choices=EnableDisableEnum.names()),
+        no_tlsv11=dict(type='str', required=False, choices=EnableDisableEnum.names()),
+        no_tlsv12=dict(type='str', required=False, choices=EnableDisableEnum.names()),
+        no_tlsv13=dict(type='str', required=False, choices=EnableDisableEnum.names()),
+        no_verifyhost=dict(type='str', required=False, choices=EnableDisableEnum.names()),
+        stick=dict(type='str', required=False, choices=EnableDisableEnum.names()),
+        tfo=dict(type='str', required=False, choices=EnableDisableEnum.names()),
+        send_proxy_v2_ssl=dict(type='str', required=False, choices=EnableDisableEnum.names()),
+        send_proxy_v2_ssl_cn=dict(type='str', required=False, choices=EnableDisableEnum.names()),
+        ssl_reuse=dict(type='str', required=False, choices=EnableDisableEnum.names()),
+        ssl=dict(type='str', required=False, choices=EnableDisableEnum.names()),
+        ssl_max_ver=dict(type='str', required=False, choices=SSLVersion.names()),
+        ssl_min_ver=dict(type='str', required=False, choices=SSLVersion.names()),
         state=dict(type='str', required=False, default='present', choices=['present', 'absent'])
     )
 
@@ -360,7 +563,10 @@ def build_requested_server(params: dict) -> Server:
         "name", "address", "port",
         "verifyhost", "weight", "track", "health_check_address",
         "health_check_port", "max_reuse", "maxconn", "maxqueue",
-        "minconn"
+        "minconn", "npn", "fall", "rise", "inter", "fastinter",
+        "error_limit", "pool_low_conn", "pool_max_conn",
+        "pool_purge_delay", "proto", "redir", "resolve_opts",
+        "resolvers", "ssl_cafile", "ssl_certificate", "tcp_ut"
     ]
 
     # Build Requested Instance
@@ -369,9 +575,24 @@ def build_requested_server(params: dict) -> Server:
     )
 
     # Initialize Enums
-    server.verify = Requirement.create(params.get('verify', None))
+    server.verify = EnableDisableEnum.create(params.get('verify', None))
     server.ws = WebSocketProtocol.create(params.get('ws', None))
-    server.check = Requirement.create(params.get('check', None))
+    server.check = EnableDisableEnum.create(params.get('check', None))
+    server.maintenance = EnableDisableEnum.create(params.get('maintenance', None))
+    server.no_sslv3 = EnableDisableEnum.create(params.get('no_sslv3', None))
+    server.no_tlsv10 = EnableDisableEnum.create(params.get('no_tlsv10', None))
+    server.no_tlsv11 = EnableDisableEnum.create(params.get('no_tlsv11', None))
+    server.no_tlsv12 = EnableDisableEnum.create(params.get('no_tlsv12', None))
+    server.no_tlsv13 = EnableDisableEnum.create(params.get('no_tlsv13', None))
+    server.no_verifyhost = EnableDisableEnum.create(params.get('no_verifyhost', None))
+    server.stick = EnableDisableEnum.create(params.get('stick', None))
+    server.tfo = EnableDisableEnum.create(params.get('tfo', None))
+    server.send_proxy_v2_ssl = EnableDisableEnum.create(params.get('send_proxy_v2_ssl', None))
+    server.send_proxy_v2_ssl_cn = EnableDisableEnum.create(params.get('send_proxy_v2_ssl_cn', None))
+    server.ssl_reuse = EnableDisableEnum.create(params.get('ssl_reuse', None))
+    server.ssl = EnableDisableEnum.create(params.get('ssl', None))
+    server.ssl_max_ver = SSLVersion.create(params.get('ssl_max_ver', None))
+    server.ssl_min_ver = SSLVersion.create(params.get('ssl_min_ver', None))
 
     # Build Requested Instance
     return server
