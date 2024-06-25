@@ -273,10 +273,10 @@ def build_requested_rule(params: dict) -> BackendSwitchingRule:
 
     # Build Requested Instance
     return BackendSwitchingRule(
-        cond=ConditionType(params['rule_cond']),
-        cond_test=params['rule_cond_test'],
-        index=params['rule_index'],
-        name=params['rule_name']
+        cond=ConditionType(params.get('rule_cond', None)),
+        cond_test=params.get('rule_cond_test', None),
+        index=params.get('rule_index', 0),
+        name=params.get('rule_name', None)
     )
 
 
