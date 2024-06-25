@@ -575,7 +575,7 @@ def build_requested_server(params: dict) -> Server:
     )
 
     # Initialize Enums
-    server.verify = EnableDisableEnum.create(params.get('verify', None))
+    server.verify = Requirement.create(params.get('verify', None))
     server.ws = WebSocketProtocol.create(params.get('ws', None))
     server.check = EnableDisableEnum.create(params.get('check', None))
     server.maintenance = EnableDisableEnum.create(params.get('maintenance', None))
