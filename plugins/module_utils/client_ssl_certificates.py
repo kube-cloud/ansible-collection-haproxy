@@ -251,11 +251,40 @@ class SslCertificateClient:
             # Raise Custom Error
             raise FileNotFoundError("File to Upload is Not Found : {path}".format(path=path))
 
-        # Delete Certificate
-        self.delete_certificate(name=name, force_reload=False)
+        # Read Fie content
+        with open(path.strip(), 'r') as file:
 
-        # Create Certificate
-        self.create_certificate(name=name, path=path, force_reload=force_reload)
+            # Read Content
+            certificate_content = file.read()
+
+        # Build the Operation URL
+        url = self.URL_TEMPLATE.format(
+            base_url=self.base_url,
+            uri=self.CERTIFICATE_URI_TEMPLATE.format(
+                certificate_uri=self.CERTIFICATE_URI.format(name=name.strip()),
+                force_reload=force_reload
+            ),
+            version=self.api_version
+        )
+
+        # Define Request Headers
+        headers = {
+            'Content-Type': 'text/plain'
+        }
+
+        # Execute request
+        response = requests.put(url, data=certificate_content, headers=headers)
+
+        # If Object Exists
+        if is_2xx(response.status_code):
+
+            # Return JSON
+            return response.json()
+
+        else:
+
+            # Raise Exception
+            response.raise_for_status()
 
     def delete_certificate(self, name: str, force_reload: bool = True):
         """
