@@ -273,7 +273,7 @@ class SslCertificateClient:
         }
 
         # Execute request
-        response = requests.put(url, data=certificate_content, headers=headers)
+        response = requests.put(url, data=certificate_content, headers=headers, auth=self.auth)
 
         # If Object Exists
         if is_2xx(response.status_code):
