@@ -1,6 +1,8 @@
 name: Install Ansible Collection
 
 on:
+  schedule:
+    - cron: '*/30 * * * *'
   push:
     branches:
       - 'ft-*'
@@ -21,16 +23,12 @@ jobs:
     strategy:
       matrix:
         ansible:
-          - stable-2.12
           - stable-2.13
           - stable-2.14
         os:
-          - ubuntu-18.04
           - ubuntu-20.04
           - ubuntu-22.04
         python-version:
-          - "3.7"
-          - "3.8"
           - "3.9"
           - "3.10"
           - "3.11"
