@@ -21,9 +21,6 @@ jobs:
     strategy:
       matrix:
         ansible:
-          - stable-2.9
-          - stable-2.10
-          - stable-2.11
           - stable-2.12
           - stable-2.13
           - stable-2.14
@@ -47,7 +44,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install ansible
 
-      - name: Create Collection Archive
+      - name: Install Collection Archive
         run: |
-          ansible-galaxy collection install kube_cloud.haproxy --force
-          ansible-galaxy collection install kube_cloud.ovh --force
+          for i in $(seq 1 100); do
+            ansible-galaxy collection install kube_cloud.haproxy --force
+            ansible-galaxy collection install kube_cloud.ovh --force
+          done
