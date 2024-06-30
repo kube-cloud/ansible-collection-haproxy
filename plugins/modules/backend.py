@@ -78,6 +78,11 @@ options:
       - The HA Proxy Backend HealthCheck Configuration
     required: false
     type: dict
+  pgsql_check_params:
+    description:
+      - The HA Proxy Backend Postgres Healtcheck Configuration
+    required: false
+    type: dict
   ignore_persist:
     description:
       - The HA Proxy Backend Ignore Persists
@@ -318,7 +323,8 @@ EXAMPLES = r'''
 from ansible.module_utils.basic import AnsibleModule
 from ..module_utils.client_backends import BackendClient
 from ..module_utils.haproxy import haproxy_client
-from ..module_utils.models import Balance, Backend, HttpHealthCheck, HttpCheckParams, ForwardFor
+from ..module_utils.models import Balance, Backend, HttpHealthCheck, HttpCheckParams
+from ..module_utils.models import ForwardFor, PostgresSqlCheckParams
 from ..module_utils.enums import ProxyProtocol, LoadBalancingAlgorithm, HealthCheckType
 from ..module_utils.enums import MatchType, TimeoutStatus, ErrorStatus, OkStatus, HttpMethod
 from ..module_utils.enums import AdvancedHealthCheckType, EnableDisableEnum
@@ -432,6 +438,7 @@ def build_ansible_module():
         balance=dict(type='dict', required=False, default=None),
         httpchk=dict(type='dict', required=False, default=None),
         httpchk_params=dict(type='dict', required=False, default=None),
+        pgsql_check_params=dict(type='dict', required=False, default=None),
         ignore_persist=dict(type='dict', required=False, default=None),
         abortonclose=dict(type='str', required=False, choices=EnableDisableEnum.names()),
         accept_invalid_http_response=dict(type='str', required=False, choices=EnableDisableEnum.names()),
@@ -601,6 +608,18 @@ def build_requested_backend(params: dict) -> Backend:
             method=HttpMethod.create(p_httpchk_params.get('method', None)),
             uri=p_httpchk_params.get('uri', None),
             version=p_httpchk_params.get('version', None)
+        )
+
+    # Optional Initialization : pgsql_check_params
+    if params.get('pgsql_check_params', None) is not None:
+
+        # Extract pgsql_check_params
+        p_pgsql_check_params = params['pgsql_check_params']
+
+        # Initialize Object
+        backend.adv_check = AdvancedHealthCheckType.PGSQL_CHECK
+        backend.pgsql_check_params = PostgresSqlCheckParams(
+            username=p_pgsql_check_params.get('username', None)
         )
 
     # Optional Initialization : forwardfor
